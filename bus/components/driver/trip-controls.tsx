@@ -207,12 +207,12 @@ export function TripControls({ busId, token, driverName, onTripEnd }: TripContro
         )}
       </div>
 
-      <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-6 hover:bg-white/10 transition-all duration-300">
-        <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20">
-            <Navigation className="h-5 w-5 text-purple-400" />
+      <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 hover:bg-white/10 transition-all duration-300">
+        <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+          <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20">
+            <Navigation className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400" />
           </div>
-          <h3 className="text-lg font-bold text-white">Mission Control</h3>
+          <h3 className="text-base sm:text-lg font-bold text-white">Mission Control</h3>
         </div>
 
         {!isTripActive ? (
@@ -249,26 +249,26 @@ export function TripControls({ busId, token, driverName, onTripEnd }: TripContro
         )}
 
         {isTripActive && (
-          <div className="grid grid-cols-2 gap-4 mt-6">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-blue-500/20">
-                  <Clock className="h-4 w-4 text-blue-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-6">
+            <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="p-1.5 sm:p-2 rounded-lg bg-blue-500/20">
+                  <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-white font-mono">{getTripDuration()}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg sm:text-2xl font-bold text-white font-mono truncate">{getTripDuration()}</p>
                   <p className="text-xs text-white/60">Trip Duration</p>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-green-500/20">
-                  <Users className="h-4 w-4 text-green-400" />
+            <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all duration-200">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="p-1.5 sm:p-2 rounded-lg bg-green-500/20">
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-white">{connectedPassengers}</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-lg sm:text-2xl font-bold text-white">{connectedPassengers}</p>
                   <p className="text-xs text-white/60">Passengers</p>
                 </div>
               </div>
@@ -277,52 +277,52 @@ export function TripControls({ busId, token, driverName, onTripEnd }: TripContro
         )}
       </div>
 
-      {location && isTripActive && (
-        <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-6 hover:bg-white/10 transition-all duration-300">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20">
-              <MapPin className="h-5 w-5 text-amber-400" />
+        {location && isTripActive && (
+        <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 hover:bg-white/10 transition-all duration-300">
+          <div className="flex items-center space-x-2 sm:space-x-3 mb-4 sm:mb-6">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20">
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400" />
             </div>
-            <h3 className="text-lg font-bold text-white">Live Telemetry</h3>
+            <h3 className="text-base sm:text-lg font-bold text-white">Live Telemetry</h3>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-purple-500/20">
-                  <Gauge className="h-4 w-4 text-purple-400" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+            <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="p-1.5 sm:p-2 rounded-lg bg-purple-500/20">
+                  <Gauge className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
                 </div>
-                <div>
-                  <p className="text-lg font-bold text-white">{location.speed.toFixed(1)} km/h</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base sm:text-lg font-bold text-white truncate">{location.speed.toFixed(1)} km/h</p>
                   <p className="text-xs text-white/60">Current Speed</p>
                 </div>
               </div>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-cyan-500/20">
-                  <Compass className="h-4 w-4 text-cyan-400" />
+            <div className="p-3 sm:p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <div className="p-1.5 sm:p-2 rounded-lg bg-cyan-500/20">
+                  <Compass className="h-3 w-3 sm:h-4 sm:w-4 text-cyan-400" />
                 </div>
-                <div>
-                  <p className="text-lg font-bold text-white">{location.heading.toFixed(0)}°</p>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base sm:text-lg font-bold text-white truncate">{location.heading.toFixed(0)}°</p>
                   <p className="text-xs text-white/60">Heading</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-400/20">
-            <div className="flex items-center justify-between">
-              <div>
+          <div className="p-3 sm:p-4 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-400/20">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-xs text-green-300 font-medium mb-1">GPS Coordinates</p>
-                <p className="text-xs text-white/70 font-mono">
+                <p className="text-xs text-white/70 font-mono break-all">
                   {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
                 </p>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 flex-shrink-0">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <p className="text-xs text-green-300">Broadcasting Live</p>
+                <p className="text-xs text-green-300 whitespace-nowrap">Broadcasting Live</p>
               </div>
             </div>
           </div>
@@ -330,26 +330,26 @@ export function TripControls({ busId, token, driverName, onTripEnd }: TripContro
       )}
 
       {!isTripActive && (
-        <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-6 hover:bg-white/10 transition-all duration-300">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20">
-              <Zap className="h-5 w-5 text-blue-400" />
+        <div className="backdrop-blur-sm bg-white/5 rounded-2xl border border-white/10 p-4 sm:p-6 hover:bg-white/10 transition-all duration-300">
+          <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-blue-500/20 to-cyan-500/20">
+              <Zap className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400" />
             </div>
-            <h3 className="text-lg font-bold text-white">Quick Start Guide</h3>
+            <h3 className="text-base sm:text-lg font-bold text-white">Quick Start Guide</h3>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {[
               "Ensure GPS is enabled on your device",
               "Click 'Start Trip' to begin sharing location",
               "Passengers will see your real-time location",
               "Click 'End Trip' when your route is complete",
             ].map((instruction, index) => (
-              <div key={index} className="flex items-center space-x-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center text-xs font-bold text-blue-300">
+              <div key={index} className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-xl bg-white/5 border border-white/10">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center text-xs font-bold text-blue-300 flex-shrink-0 mt-0.5 sm:mt-0">
                   {index + 1}
                 </div>
-                <p className="text-sm text-white/80">{instruction}</p>
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">{instruction}</p>
               </div>
             ))}
           </div>

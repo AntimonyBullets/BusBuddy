@@ -231,108 +231,108 @@ export default function HeroPage() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-emerald-500/5"></div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
           {/* Header */}
-          <header className="flex items-center justify-between mb-16">
-            <div className="flex items-center gap-4">
+          <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 sm:mb-16 gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative p-3 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl">
-                  <Bus className="h-8 w-8 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl sm:rounded-2xl blur-sm opacity-50"></div>
+                <div className="relative p-2 sm:p-3 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl sm:rounded-2xl shadow-xl">
+                  <Bus className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                 </div>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 font-serif">BusBuddy</h1>
-                <p className="text-sm text-emerald-600 font-sans">Smart Transit Companion</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 font-serif">BusBuddy</h1>
+                <p className="text-xs sm:text-sm text-emerald-600 font-sans">Smart Transit Companion</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
               {!isAuthenticated ? (
                 <>
                   <Button
                     variant="outline"
                     onClick={() => router.push("/auth")}
-                    className="flex items-center gap-2 px-6 py-3 border-emerald-500 text-emerald-600 hover:bg-emerald-50 rounded-2xl font-medium"
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-emerald-500 text-emerald-600 hover:bg-emerald-50 rounded-xl sm:rounded-2xl font-medium text-sm flex-1 sm:flex-initial"
                   >
-                    <LogIn className="h-4 w-4" />
-                    Login
+                    <LogIn className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Login</span>
                   </Button>
                   <Button
                     onClick={() => router.push("/auth")}
-                    className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-medium shadow-lg"
+                    className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl sm:rounded-2xl font-medium shadow-lg text-sm flex-1 sm:flex-initial"
                   >
-                    <UserPlus className="h-4 w-4" />
-                    Sign Up
+                    <UserPlus className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Sign Up</span>
                   </Button>
                 </>
               ) : (
                 <Button
                   variant="outline"
                   onClick={handleLogout}
-                  className="flex items-center gap-2 px-6 py-3 border-red-500 text-red-600 hover:bg-red-50 rounded-2xl font-medium bg-transparent"
+                  className="flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 border-red-500 text-red-600 hover:bg-red-50 rounded-xl sm:rounded-2xl font-medium bg-transparent text-sm"
                 >
-                  <LogOut className="h-4 w-4" />
-                  Logout
+                  <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Logout</span>
                 </Button>
               )}
             </div>
           </header>
 
           {/* Hero Content */}
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6 font-serif text-balance">
+          <div className="text-center mb-8 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 font-serif">
               Track Your Bus in Real-Time
             </h2>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto font-sans text-pretty">
+            <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto font-sans px-2">
               Connecting Passengers and Operators Seamlessly. Experience the future of public transportation with
               real-time tracking, smart notifications, and seamless journey planning.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-2xl mx-auto mb-8 sm:mb-16 px-4">
               <Button
-                className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-2xl p-6 h-auto shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="group relative overflow-hidden bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-xl sm:rounded-2xl p-4 sm:p-6 h-auto shadow-xl transition-all duration-300"
                 onClick={() => router.push("/passenger")}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <MapPin className="h-6 w-6" />
+                <div className="flex items-center justify-center gap-2 sm:gap-3">
+                  <MapPin className="h-5 w-5 sm:h-6 sm:w-6" />
                   <div className="text-left">
-                    <div className="font-semibold text-lg">I'm a Passenger</div>
-                    <div className="text-sm opacity-90">Find & track buses</div>
+                    <div className="font-semibold text-base sm:text-lg">I'm a Passenger</div>
+                    <div className="text-xs sm:text-sm opacity-90">Find & track buses</div>
                   </div>
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </Button>
 
               <Button
                 variant="outline"
-                className="group relative overflow-hidden bg-white/80 hover:bg-white text-emerald-600 border-emerald-200 hover:border-emerald-300 rounded-2xl p-6 h-auto shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+                className="group relative overflow-hidden bg-white/80 hover:bg-white text-emerald-600 border-emerald-200 hover:border-emerald-300 rounded-xl sm:rounded-2xl p-4 sm:p-6 h-auto shadow-xl transition-all duration-300"
                 onClick={() => router.push("/driver")}
               >
-                <div className="flex items-center justify-center gap-3">
-                  <Bus className="h-6 w-6" />
+                <div className="flex items-center justify-center gap-2 sm:gap-3">
+                  <Bus className="h-5 w-5 sm:h-6 sm:w-6" />
                   <div className="text-left">
-                    <div className="font-semibold text-lg">I'm a Driver</div>
-                    <div className="text-sm opacity-90">Manage your route</div>
+                    <div className="font-semibold text-base sm:text-lg">I'm a Driver</div>
+                    <div className="text-xs sm:text-sm opacity-90">Manage your route</div>
                   </div>
-                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </Button>
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-16 px-4">
               {[
                 { number: "10K+", label: "Active Users", icon: Users },
                 { number: "500+", label: "Bus Routes", icon: Bus },
                 { number: "4.8", label: "User Rating", icon: Star },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-xl mb-4">
-                    <stat.icon className="h-8 w-8 text-white" />
+                  <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl sm:rounded-2xl shadow-xl mb-3 sm:mb-4">
+                    <stat.icon className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">{stat.number}</div>
-                  <div className="text-gray-600">{stat.label}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{stat.number}</div>
+                  <div className="text-sm sm:text-base text-gray-600">{stat.label}</div>
                 </div>
               ))}
             </div>

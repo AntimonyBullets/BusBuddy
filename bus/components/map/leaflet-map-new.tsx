@@ -721,8 +721,8 @@ export function LeafletMap({ selectedBus, busLocation, onLocationUpdate }: Leafl
           {/* Map Container */}
           <div 
             ref={mapRef} 
-            className="w-full h-[70vh] md:h-[80vh] bg-gray-100 relative"
-            style={{ minHeight: '500px' }}
+            className="w-full h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] bg-gray-100 relative"
+            style={{ minHeight: '300px' }}
           />
           
           {/* Error Message */}
@@ -743,15 +743,15 @@ export function LeafletMap({ selectedBus, busLocation, onLocationUpdate }: Leafl
           )}
 
           {/* Control Panel */}
-          <div className="absolute top-4 right-4 z-[1000] space-y-2">
+          <div className="absolute top-2 sm:top-4 right-2 sm:right-4 z-[1000] space-y-1 sm:space-y-2">
             <Button
               onClick={centerOnUser}
               variant="outline"
               size="sm"
-              className="bg-white/90 hover:bg-white shadow-lg"
+              className="bg-white/90 hover:bg-white shadow-lg w-8 h-8 sm:w-10 sm:h-10 p-0"
               title="Center on your location"
             >
-              <Navigation className="h-4 w-4" />
+              <Navigation className="h-3 w-3 sm:h-4 sm:w-4" />
             </Button>
             
             {selectedBus && (
@@ -759,43 +759,13 @@ export function LeafletMap({ selectedBus, busLocation, onLocationUpdate }: Leafl
                 onClick={testRouteCreation}
                 variant="outline"
                 size="sm"
-                className="bg-white/90 hover:bg-white shadow-lg"
+                className="bg-white/90 hover:bg-white shadow-lg w-8 h-8 sm:w-10 sm:h-10 p-0"
                 title="Test route creation"
               >
-                <Zap className="h-4 w-4" />
+                <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
               </Button>
             )}
           </div>
-
-          {/* Bus Info Panel */}
-          {selectedBus && (
-            <div className="absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-lg p-4 shadow-lg z-[1000]">
-              <div className="flex items-center space-x-3">
-                <div className="bg-blue-100 p-2 rounded-full">
-                  <MapPin className="h-5 w-5 text-blue-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-gray-900 truncate">
-                    Bus {selectedBus.busNumber}
-                  </h3>
-                  <p className="text-sm text-gray-600 truncate">
-                    {selectedBus.journeyDetails?.fromStop?.name || selectedBus.route?.startPoint?.name || 'Route'} → {selectedBus.journeyDetails?.toStop?.name || selectedBus.route?.endPoint?.name || 'Destination'}
-                  </p>
-                  {selectedBus.journeyDetails?.estimatedJourneyTime && (
-                    <p className="text-xs text-gray-500">
-                      ⏱️ {selectedBus.journeyDetails.estimatedJourneyTime}
-                    </p>
-                  )}
-                </div>
-                {busLocation && (
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-green-600">Live</p>
-                    <p className="text-xs text-gray-500">{busLocation.speed || 0} km/h</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>

@@ -117,72 +117,60 @@ export default function DriverPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 safe-area-inset relative overflow-hidden">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"></div>
-        <div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: "2s" }}
-        ></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-blue-500/3 to-purple-500/3 rounded-full blur-3xl animate-spin-slow"></div>
-      </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 safe-area-inset relative">
       {/* Enhanced Header with Real-time Clock */}
-      <header className="relative overflow-hidden">
+      <header className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/30 to-purple-600/30 backdrop-blur-xl"></div>
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fillRule='evenodd'%3E%3Cg fill='%239C92AC' fillOpacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}
-        ></div>
 
-        <div className="relative p-6 sticky top-0 z-10 border-b border-white/10">
-          <div className="flex items-center justify-between max-w-7xl mx-auto">
-            <div className="flex items-center space-x-4">
+                <div className="relative p-4 sm:p-6 sticky top-0 z-10 border-b border-white/10 safe-area-top">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-7xl mx-auto">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <button
                 onClick={handleBackToHome}
-                className="group flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-300 transform hover:scale-105"
+                className="group flex items-center space-x-2 text-white/80 hover:text-white transition-all duration-200"
               >
-                <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-all duration-300 border border-white/20 group-hover:border-white/30">
-                  <ArrowLeft className="h-5 w-5" />
+                <div className="p-2 rounded-xl bg-white/10 backdrop-blur-sm group-hover:bg-white/20 transition-all duration-200 border border-white/20 group-hover:border-white/30">
+                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                 </div>
               </button>
 
-              <div className="flex items-center space-x-4">
-                <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-xl animate-glow">
-                  <Bus className="h-8 w-8 text-white" />
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="relative">
+                  <div className="p-2 sm:p-3 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl sm:rounded-2xl shadow-xl">
+                    <Bus className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
+                  </div>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white tracking-tight">Driver Command Center</h1>
-                  <p className="text-sm text-blue-200">Professional Transit Control System</p>
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight">Driver Command Center</h1>
+                  <p className="text-xs sm:text-sm text-blue-200">Professional Transit Control System</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-between sm:justify-end space-x-3 sm:space-x-4">
               <div className="text-right">
-                <div className="text-lg font-mono text-white font-bold">{currentTime.toLocaleTimeString()}</div>
+                <div className="text-sm sm:text-lg font-mono text-white font-bold">{currentTime.toLocaleTimeString()}</div>
                 <div className="text-xs text-blue-200">{currentTime.toLocaleDateString()}</div>
               </div>
 
               <Button
                 onClick={handleLogout}
-                className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 font-medium group"
+                className="px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white rounded-xl shadow-lg transition-all duration-200 border-0 font-medium text-sm sm:text-base"
               >
-                <span className="group-hover:animate-pulse">Logout</span>
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Exit</span>
               </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="relative z-10 px-6 py-4 max-w-7xl mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 p-4 hover:bg-white/15 transition-all duration-300 group">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-green-500/20 group-hover:bg-green-500/30 transition-colors">
-                <Activity className="h-5 w-5 text-green-400" />
+      <div className="relative z-10 px-4 sm:px-6 py-3 sm:py-4 max-w-7xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+          <div className="backdrop-blur-xl bg-white/10 rounded-xl sm:rounded-2xl border border-white/20 p-3 sm:p-4 transition-all duration-200">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-green-500/20 transition-colors">
+                <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
               </div>
               <div>
                 <p className="text-xs text-white/60">System Status</p>
@@ -191,10 +179,10 @@ export default function DriverPage() {
             </div>
           </div>
 
-          <div className="backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 p-4 hover:bg-white/15 transition-all duration-300 group">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-blue-500/20 group-hover:bg-blue-500/30 transition-colors">
-                <Users className="h-5 w-5 text-blue-400" />
+          <div className="backdrop-blur-xl bg-white/10 rounded-xl sm:rounded-2xl border border-white/20 p-3 sm:p-4 transition-all duration-200">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-blue-500/20 transition-colors">
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-400" />
               </div>
               <div>
                 <p className="text-xs text-white/60">Passengers</p>
@@ -203,10 +191,10 @@ export default function DriverPage() {
             </div>
           </div>
 
-          <div className="backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 p-4 hover:bg-white/15 transition-all duration-300 group">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-purple-500/20 group-hover:bg-purple-500/30 transition-colors">
-                <MapPin className="h-5 w-5 text-purple-400" />
+          <div className="backdrop-blur-xl bg-white/10 rounded-xl sm:rounded-2xl border border-white/20 p-3 sm:p-4 transition-all duration-200">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-purple-500/20 transition-colors">
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-purple-400" />
               </div>
               <div>
                 <p className="text-xs text-white/60">GPS Status</p>
@@ -215,10 +203,10 @@ export default function DriverPage() {
             </div>
           </div>
 
-          <div className="backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 p-4 hover:bg-white/15 transition-all duration-300 group">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 rounded-lg bg-amber-500/20 group-hover:bg-amber-500/30 transition-colors">
-                <Clock className="h-5 w-5 text-amber-400" />
+          <div className="backdrop-blur-xl bg-white/10 rounded-xl sm:rounded-2xl border border-white/20 p-3 sm:p-4 transition-all duration-200">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-amber-500/20 transition-colors">
+                <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400" />
               </div>
               <div>
                 <p className="text-xs text-white/60">Trip Time</p>
@@ -230,13 +218,13 @@ export default function DriverPage() {
       </div>
 
       {/* Main Content with Enhanced Glass Cards */}
-      <main className="relative z-10 p-6 max-w-7xl mx-auto space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <main className="relative z-10 p-4 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6 safe-area-bottom">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
           {/* Driver Info Card */}
-          <div className="lg:col-span-1 backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-2xl p-6 hover:bg-white/15 transition-all duration-500 group hover:scale-[1.02] hover:shadow-3xl">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="xl:col-span-1 backdrop-blur-xl bg-white/10 rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl p-4 sm:p-6 transition-all duration-200">
+            <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-xl bg-gradient-to-br from-green-400 to-emerald-600 shadow-lg">
+                <svg className="h-5 w-5 sm:h-6 sm:w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -245,7 +233,7 @@ export default function DriverPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-white group-hover:text-green-200 transition-colors">
+              <h2 className="text-lg sm:text-xl font-bold text-white">
                 Driver Profile
               </h2>
             </div>
@@ -260,9 +248,9 @@ export default function DriverPage() {
           </div>
 
           {/* Trip Controls Card */}
-          <div className="lg:col-span-2 backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-2xl p-6 hover:bg-white/15 transition-all duration-500 group hover:scale-[1.02] hover:shadow-3xl">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="p-3 rounded-xl bg-gradient-to-br from-purple-400 to-violet-600 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+          <div className="xl:col-span-2 backdrop-blur-xl bg-white/10 rounded-2xl sm:rounded-3xl border border-white/20 shadow-2xl p-4 sm:p-6 transition-all duration-200">
+            <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-6">
+              <div className="p-2 sm:p-3 rounded-xl bg-gradient-to-br from-purple-400 to-violet-600 shadow-lg">
                 <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
