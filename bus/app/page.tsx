@@ -185,17 +185,16 @@ export default function HeroPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 max-w-6xl mx-auto">
             {/* Track Child's Bus Card */}
             <Card 
-              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer" 
-              style={{borderColor: '#212153'}}
+              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer busbuddy-primary-border" 
               onClick={() => handleServiceCardClick("Track Your Child's Bus")}
             >
               <CardHeader className="px-3 sm:px-5 py-2 sm:py-3">
                 <div className="flex justify-center mb-2">
-                  <div className="p-2 rounded-lg" style={{background: 'linear-gradient(to bottom right, #212153, #1e1b4b)'}}>
+                  <div className="p-2 rounded-lg busbuddy-primary-bg">
                     <Baby className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
                   </div>
                 </div>
-                <CardTitle className="text-lg sm:text-xl font-bold text-center" style={{color: '#212153'}}>
+                <CardTitle className="text-lg sm:text-xl font-bold text-center busbuddy-primary-color">
                   Track Your Child's Bus
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base text-gray-600 text-center mb-1">
@@ -203,7 +202,7 @@ export default function HeroPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="px-3 sm:px-5 py-1 sm:py-2">
-                <div className="flex items-center justify-center text-sm sm:text-base font-medium" style={{color: '#212153'}}>
+                <div className="flex items-center justify-center text-sm sm:text-base font-medium busbuddy-primary-color">
                   <span>Start Tracking</span>
                   <ArrowRight className="h-3 w-3 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -212,8 +211,7 @@ export default function HeroPage() {
 
             {/* Register Institution Card */}
             <Card 
-              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer" 
-              style={{borderColor: '#212153'}}
+              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer busbuddy-primary-border" 
               onClick={() => handleServiceCardClick("Register Your Institution")}
             >
               <CardHeader className="px-3 sm:px-5 py-2 sm:py-3">

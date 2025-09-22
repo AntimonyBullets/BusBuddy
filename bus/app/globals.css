@@ -500,3 +500,28 @@
     border: 2px solid #000;
   }
 }
+
+/* Custom BusBuddy styles to prevent hydration issues */
+.busbuddy-primary-bg {
+  background: linear-gradient(to bottom right, #212153, #1e1b4b) !important;
+}
+
+.busbuddy-primary-color {
+  color: #212153 !important;
+}
+
+.busbuddy-primary-border {
+  border-color: #212153 !important;
+}
+
+.busbuddy-footer-bg {
+  background-color: #212153 !important;
+}
+
+.busbuddy-button-bg {
+  background-color: #212153 !important;
+}
+
+.busbuddy-hero-gradient {
+  background: linear-gradient(to right, #212153, #1e1b4b) !important;
+}
