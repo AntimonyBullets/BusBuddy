@@ -11,33 +11,33 @@
   --card-foreground: #475569; /* Text color for cards */
   --popover: #ffffff; /* Background for popovers */
   --popover-foreground: #475569; /* Text color for popovers */
-  --primary: #059669; /* Primary action color */
+  --primary: #212153; /* Dark blue primary color */
   --primary-foreground: #ffffff; /* Text color for primary actions */
-  --secondary: #10b981; /* Accent color for secondary actions */
-  --secondary-foreground: #ffffff; /* Text color for secondary actions */
+  --secondary: #b0d9ff; /* Light blue accent color for secondary actions */
+  --secondary-foreground: #212153; /* Text color for secondary actions */
   --muted: #f1f5f9; /* Muted background for subtle elements */
   --muted-foreground: #475569; /* Muted text */
-  --accent: #10b981; /* Accent color for interactive elements */
-  --accent-foreground: #ffffff; /* Text color for accent elements */
+  --accent: #b0d9ff; /* Accent color for interactive elements */
+  --accent-foreground: #212153; /* Text color for accent elements */
   --destructive: #be123c; /* Color for error messages (if needed) */
   --destructive-foreground: #ffffff; /* Text color for destructive actions */
-  --border: #475569; /* Border color for input fields */
+  --border: #212153; /* Border color for input fields */
   --input: #ffffff; /* Input field background */
-  --ring: rgba(5, 150, 105, 0.5); /* Ring color for focus states */
-  --chart-1: #059669; /* Chart color */
-  --chart-2: #10b981; /* Chart color */
-  --chart-3: #4ade80; /* Chart color */
-  --chart-4: #86efac; /* Chart color */
-  --chart-5: #bbf7d0; /* Chart color */
+  --ring: rgba(33, 33, 83, 0.3); /* Ring color for focus states */
+  --chart-1: #212153; /* Chart color */
+  --chart-2: #b0d9ff; /* Chart color */
+  --chart-3: #93c5fd; /* Chart color */
+  --chart-4: #dbeafe; /* Chart color */
+  --chart-5: #eff6ff; /* Chart color */
   --radius: 2rem; /* Corner radius for buttons and inputs */
   --sidebar: #ffffff; /* Sidebar background */
   --sidebar-foreground: #475569; /* Sidebar text color */
-  --sidebar-primary: #059669; /* Sidebar primary color */
+  --sidebar-primary: #212153; /* Sidebar primary color */
   --sidebar-primary-foreground: #ffffff; /* Sidebar primary text */
-  --sidebar-accent: #10b981; /* Sidebar accent color */
-  --sidebar-accent-foreground: #ffffff; /* Sidebar accent text */
-  --sidebar-border: #475569; /* Sidebar border */
-  --sidebar-ring: rgba(5, 150, 105, 0.5); /* Sidebar focus ring */
+  --sidebar-accent: #b0d9ff; /* Sidebar accent color */
+  --sidebar-accent-foreground: #212153; /* Sidebar accent text */
+  --sidebar-border: #212153; /* Sidebar border */
+  --sidebar-ring: rgba(33, 33, 83, 0.3); /* Sidebar focus ring */
 }
 
 .dark {
