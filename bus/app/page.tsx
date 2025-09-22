@@ -182,7 +182,7 @@ export default function HeroPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-8 px-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 max-w-6xl mx-auto">
             {/* Track Child's Bus Card */}
             <Card 
               className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer" 
@@ -239,7 +239,7 @@ export default function HeroPage() {
 
             {/* Track City Bus Routes Card */}
             <Card 
-              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl sm:col-span-2 lg:col-span-1 cursor-pointer" 
+              className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer" 
               style={{borderColor: '#212153'}}
               onClick={() => handleServiceCardClick("Track City Bus Routes")}
             >
