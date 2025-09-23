@@ -61,21 +61,21 @@ export default function PassengerPage() {
 
   if (isLoading || !mounted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 flex items-center justify-center safe-area-inset relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 flex items-center justify-center safe-area-inset relative overflow-hidden">
         <div className="text-center relative z-10">
           <div className="relative mb-6 sm:mb-8">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center mx-auto shadow-2xl busbuddy-primary-bg">
               <Bus className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
             </div>
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl sm:text-2xl font-bold text-white">BusBuddy Passenger</h2>
-            <p className="text-blue-200 text-sm sm:text-base">Preparing your journey search...</p>
+            <h2 className="text-xl sm:text-2xl font-bold busbuddy-primary-color">BusBuddy Passenger</h2>
+            <p className="text-gray-600 text-sm sm:text-base">Preparing your journey search...</p>
             <div className="flex justify-center mt-4">
               <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
-                <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
+                <div className="w-2 h-2 rounded-full animate-bounce busbuddy-primary-bg"></div>
+                <div className="w-2 h-2 rounded-full animate-bounce busbuddy-primary-bg" style={{ animationDelay: "0.1s" }}></div>
+                <div className="w-2 h-2 rounded-full animate-bounce busbuddy-primary-bg" style={{ animationDelay: "0.2s" }}></div>
               </div>
             </div>
           </div>
@@ -89,18 +89,18 @@ export default function PassengerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 safe-area-inset relative">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 safe-area-inset relative">
       <header className="relative z-10">
-        <div className="glass-card border-b border-white/10">
-          <div className="p-4 sm:p-6 pwa-header safe-area-top">
+        <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+          <div className="pwa-header safe-area-top" style={{ padding: '16px' }}>
             <div className="flex items-center justify-between max-w-6xl mx-auto">
               <div className="flex items-center space-x-2 sm:space-x-4">
                 {viewMode === "tracking" && (
                   <button
                     onClick={handleBackToSearch}
-                    className="group flex items-center text-white/80 hover:text-white transition-all duration-200"
+                    className="group flex items-center busbuddy-primary-color hover:opacity-75 transition-all duration-200"
                   >
-                    <div className="p-2 sm:p-3 rounded-xl glass-effect group-hover:bg-white/20 transition-all duration-200 border border-white/20">
+                    <div className="p-2 sm:p-3 rounded-xl bg-gray-100 group-hover:bg-gray-200 transition-all duration-200 border border-gray-200">
                       <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                   </button>
@@ -108,15 +108,16 @@ export default function PassengerPage() {
 
                 <div className="flex items-center space-x-2 sm:space-x-4">
                   <div className="relative">
-                    <div className="p-2 sm:p-3 bg-gradient-to-br from-emerald-500 to-cyan-600 rounded-xl sm:rounded-2xl shadow-xl">
+                    <div className="absolute inset-0 rounded-xl sm:rounded-2xl blur-sm opacity-50 busbuddy-primary-bg"></div>
+                    <div className="relative p-2 sm:p-3 rounded-xl sm:rounded-2xl shadow-xl busbuddy-primary-bg">
                       <Bus className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
                     </div>
                   </div>
                   <div>
-                    <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white tracking-tight">
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-gray-900 tracking-tight">
                       {viewMode === "search" ? "Find Your Bus" : `Tracking ${selectedBus?.busNumber}`}
                     </h1>
-                    <p className="text-xs sm:text-sm text-blue-200">
+                    <p className="text-xs sm:text-sm busbuddy-primary-color">
                       {viewMode === "search" ? "Smart Transit Search" : "Real-time Tracking"}
                     </p>
                   </div>
@@ -125,7 +126,7 @@ export default function PassengerPage() {
 
               <Button
                 onClick={handleLogout}
-                className="px-6 py-3 bg-gradient-to-r from-red-500/90 to-pink-600/90 hover:from-red-600 hover:to-pink-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 font-medium backdrop-blur-sm animate-slide-in-right"
+                className="px-4 sm:px-6 py-2 sm:py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-0 font-medium text-sm sm:text-base"
               >
                 Logout
               </Button>
@@ -134,77 +135,76 @@ export default function PassengerPage() {
         </div>
       </header>
 
-      <main className="relative z-10 p-3 sm:p-6 max-w-7xl mx-auto pb-20">
+      <main className="relative z-10 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto pb-20">
         {viewMode === "search" ? (
-          <div className="space-y-4 sm:space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {/* Enhanced Search Section */}
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8 hover-lift-enhanced animate-scale-in">
-              <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-8">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300">
+              <div className="flex items-center space-x-3 sm:space-x-4 mb-6 sm:mb-8">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-green-400 to-emerald-600 rounded-xl blur-lg opacity-50 animate-glow"></div>
-                  <div className="relative p-2 sm:p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg">
+                  <div className="absolute inset-0 rounded-xl blur-lg opacity-50 busbuddy-primary-bg"></div>
+                  <div className="relative p-2 sm:p-3 rounded-xl shadow-lg busbuddy-primary-bg">
                     <Navigation className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-white">Smart Bus Search</h2>
-                  <p className="text-sm sm:text-base text-blue-200">Find buses between any two stops</p>
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Smart Bus Search</h2>
+                  <p className="text-sm sm:text-base text-gray-600">Find buses between any two stops</p>
                 </div>
               </div>
               <BusSearch onBusSelect={handleBusSelect} />
             </div>
 
             {/* Enhanced Recent Searches Section */}
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8">
-              <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-8">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200">
+              <div className="flex items-center space-x-3 sm:space-x-4 mb-6 sm:mb-8">
                 <div className="relative">
-                  <div className="p-2 sm:p-3 bg-gradient-to-br from-purple-500 to-violet-600 rounded-xl shadow-lg">
+                  <div className="p-2 sm:p-3 rounded-xl shadow-lg busbuddy-primary-bg">
                     <Clock className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-white">Recent Searches</h2>
-                  <p className="text-sm sm:text-base text-blue-200">Quick access to your previous routes</p>
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Recent Searches</h2>
+                  <p className="text-sm sm:text-base text-gray-600">Quick access to your previous routes</p>
                 </div>
               </div>
               <RecentSearches onSearchSelect={handleRecentSearchSelect} />
             </div>
 
-            <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8">
-              <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-8">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg border border-gray-200">
+              <div className="flex items-center space-x-3 sm:space-x-4 mb-6 sm:mb-8">
                 <div className="relative">
-                  <div className="p-2 sm:p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
+                  <div className="p-2 sm:p-3 rounded-xl shadow-lg busbuddy-primary-bg">
                     <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                 </div>
                 <div>
-                  <h2 className="text-lg sm:text-2xl font-bold text-white">Quick Actions</h2>
-                  <p className="text-sm sm:text-base text-blue-200">Popular routes and shortcuts</p>
+                  <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Quick Actions</h2>
+                  <p className="text-sm sm:text-base text-gray-600">Popular routes and shortcuts</p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {[
-                  { from: "City Center", to: "Airport", time: "45 min", color: "from-blue-500 to-cyan-600" },
-                  { from: "University", to: "Mall", time: "25 min", color: "from-purple-500 to-violet-600" },
-                  { from: "Station", to: "Hospital", time: "30 min", color: "from-emerald-500 to-teal-600" },
-                  { from: "Downtown", to: "Beach", time: "40 min", color: "from-rose-500 to-pink-600" },
+                  { from: "City Center", to: "Airport", time: "45 min", color: "from-blue-400 to-blue-600" },
+                  { from: "University", to: "Mall", time: "25 min", color: "from-indigo-400 to-indigo-600" },
+                  { from: "Station", to: "Hospital", time: "30 min", color: "from-blue-500 to-indigo-500" },
+                  { from: "Downtown", to: "Beach", time: "40 min", color: "from-cyan-400 to-blue-500" },
                 ].map((route, index) => (
                   <div
                     key={`${route.from}-${route.to}`}
-                    className="interactive-card glass-effect rounded-xl sm:rounded-2xl p-4 sm:p-6 group cursor-pointer animate-scale-in"
-                    style={{ animationDelay: `${0.6 + index * 0.1}s` }}
+                    className="bg-gradient-to-br from-gray-50 to-blue-50 border border-gray-200 rounded-xl sm:rounded-2xl p-4 sm:p-6 group cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300"
                     onClick={() => console.log(`Quick search: ${route.from} to ${route.to}`)}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center space-x-2 mb-1 sm:mb-2">
-                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-emerald-400 flex-shrink-0" />
-                          <span className="text-white font-medium text-sm sm:text-base truncate">{route.from}</span>
+                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-green-500 flex-shrink-0" />
+                          <span className="text-gray-900 font-medium text-sm sm:text-base truncate">{route.from}</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-rose-400 flex-shrink-0" />
-                          <span className="text-white font-medium text-sm sm:text-base truncate">{route.to}</span>
+                          <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 flex-shrink-0" />
+                          <span className="text-gray-900 font-medium text-sm sm:text-base truncate">{route.to}</span>
                         </div>
                       </div>
                       <div className="text-right ml-2 flex-shrink-0">
@@ -221,16 +221,16 @@ export default function PassengerPage() {
             </div>
           </div>
         ) : selectedBus ? (
-          <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-8">
-            <div className="flex items-center space-x-3 sm:space-x-4 mb-4 sm:mb-8">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-lg hover:shadow-xl transition-all duration-300" style={{ border: '1px solid #1f1d4d' }}>
+            <div className="flex items-center space-x-3 sm:space-x-4 mb-6 sm:mb-8">
               <div className="relative">
-                <div className="p-2 sm:p-3 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl shadow-lg">
+                <div className="p-2 sm:p-3 rounded-xl shadow-lg busbuddy-primary-bg">
                   <MapPin className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
               </div>
               <div>
-                <h2 className="text-lg sm:text-2xl font-bold text-white">Live Bus Tracking</h2>
-                <p className="text-sm sm:text-base text-blue-200">Real-time location and updates</p>
+                <h2 className="text-lg sm:text-2xl font-bold text-gray-900">Live Bus Tracking</h2>
+                <p className="text-sm sm:text-base text-gray-600">Real-time location and updates</p>
               </div>
             </div>
             <BusTrackingView selectedBus={selectedBus} onViewChange={setTrackingView} currentView={trackingView} />
@@ -239,17 +239,17 @@ export default function PassengerPage() {
       </main>
 
       {viewMode === "tracking" && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 glass-card border-t border-white/20 p-3 sm:p-6 shadow-2xl safe-area-bottom">
-          <div className="flex justify-center gap-2 sm:gap-4 max-w-md mx-auto">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 backdrop-blur-md bg-opacity-95 p-4 sm:p-6 shadow-2xl">
+          <div className="flex justify-center gap-3 sm:gap-4 max-w-md mx-auto">
             <button
               onClick={() => {
                 console.log("[v0] Map view clicked, current view:", trackingView)
                 setTrackingView("map")
               }}
-              className={`group flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-200 ${
+              className={`group flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-200 shadow-lg ${
                 trackingView === "map"
-                  ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg"
-                  : "glass-effect text-white/80 hover:bg-white/20 hover:text-white border border-white/20"
+                  ? "busbuddy-primary-bg text-white shadow-xl scale-105"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
               }`}
             >
               <div className="flex items-center justify-center">
@@ -263,10 +263,10 @@ export default function PassengerPage() {
                 setTrackingView("list")
                 console.log("[v0] List view set, new view should be: list")
               }}
-              className={`group flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-200 ${
+              className={`group flex-1 py-3 sm:py-4 px-4 sm:px-6 rounded-xl sm:rounded-2xl font-medium transition-all duration-200 shadow-lg ${
                 trackingView === "list"
-                  ? "bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-lg"
-                  : "glass-effect text-white/80 hover:bg-white/20 hover:text-white border border-white/20"
+                  ? "busbuddy-primary-bg text-white shadow-xl scale-105"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300"
               }`}
             >
               <div className="flex items-center justify-center">
