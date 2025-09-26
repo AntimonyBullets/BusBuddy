@@ -20,11 +20,57 @@ export default function HeroPage() {
   const { toast } = useToast()
   const { t } = useLanguage()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [hasOrganization, setHasOrganization] = useState(false)
+  const [isCheckingOrganization, setIsCheckingOrganization] = useState(false)
 
   useEffect(() => {
     const authService = AuthService.getInstance()
-    setIsAuthenticated(authService.isAuthenticated())
+    const authenticated = authService.isAuthenticated()
+    setIsAuthenticated(authenticated)
+    
+    // Check if user has an organization if authenticated
+    if (authenticated) {
+      checkOrganizationExists()
+    }
   }, [])
+
+  const checkOrganizationExists = async () => {
+    try {
+      setIsCheckingOrganization(true)
+      const authService = AuthService.getInstance()
+      const currentUser = authService.getCurrentUser()
+      const accessToken = authService.getAccessToken()
+      
+      if (!currentUser || !accessToken) {
+        return
+      }
+
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL
+      const response = await fetch(`${apiUrl}/api/orgs/check-organization`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          email: currentUser.email
+        })
+      })
+
+      const result = await response.json()
+      
+      if (response.ok && result.status === "success") {
+        setHasOrganization(true)
+      } else {
+        setHasOrganization(false)
+      }
+    } catch (error) {
+      console.error('Error checking organization:', error)
+      setHasOrganization(false)
+    } finally {
+      setIsCheckingOrganization(false)
+    }
+  }
 
   const handleLogout = async () => {
     try {
@@ -48,9 +94,14 @@ export default function HeroPage() {
     if (!isAuthenticated) {
       // Redirect to login page if not authenticated
       router.push("/auth")
-    } else if (serviceName === "Register Your Institution") {
-      // Redirect to institution registration page
-      router.push("/institution-register")
+    } else if (serviceName === "Register Your Organization" || serviceName === "Manage Your Organization") {
+      if (hasOrganization) {
+        // Redirect to organization dashboard
+        router.push("/organization")
+      } else {
+        // Redirect to organization registration page
+        router.push("/institution-register")
+      }
     } else {
       // User is authenticated, other features coming soon
       toast({
@@ -216,10 +267,10 @@ export default function HeroPage() {
               </CardContent>
             </Card>
 
-            {/* Register Institution Card */}
+            {/* Register/Manage Institution Card */}
             <Card 
               className="group relative overflow-hidden bg-white border-2 hover:shadow-lg transition-all duration-300 rounded-lg sm:rounded-xl cursor-pointer busbuddy-primary-border" 
-              onClick={() => handleServiceCardClick("Register Your Institution")}
+              onClick={() => handleServiceCardClick(hasOrganization ? "Manage Your Organization" : "Register Your Organization")}
             >
               <CardHeader className="px-3 sm:px-5 py-2 sm:py-3">
                 <div className="flex justify-center mb-2">
@@ -228,15 +279,15 @@ export default function HeroPage() {
                   </div>
                 </div>
                 <CardTitle className="text-lg sm:text-xl font-bold text-center" style={{color: '#212153'}}>
-                  {t('landing.institution.title')}
+                  {isCheckingOrganization ? 'Checking...' : (hasOrganization ? t('landing.institution.manageTitle') : t('landing.institution.title'))}
                 </CardTitle>
                 <CardDescription className="text-sm sm:text-base text-gray-600 text-center mb-1">
-                  {t('landing.institution.description')}
+                  {isCheckingOrganization ? 'Please wait...' : (hasOrganization ? t('landing.institution.manageDescription') : t('landing.institution.description'))}
                 </CardDescription>
               </CardHeader>
               <CardContent className="px-3 sm:px-5 py-1 sm:py-2">
                 <div className="flex items-center justify-center text-sm sm:text-base font-medium" style={{color: '#212153'}}>
-                  <span>{t('landing.institution.action')}</span>
+                  <span>{isCheckingOrganization ? 'Loading...' : (hasOrganization ? t('landing.institution.manageAction') : t('landing.institution.action'))}</span>
                   <ArrowRight className="h-3 w-3 ml-2 group-hover:translate-x-1 transition-transform" />
                 </div>
               </CardContent>

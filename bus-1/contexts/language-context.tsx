@@ -37,9 +37,12 @@ const translations = {
     'landing.trackChild.title': 'Track Your Child\'s Bus',
     'landing.trackChild.description': 'Keep your children safe with real-time school bus tracking and notifications',
     'landing.trackChild.action': 'Start Tracking',
-    'landing.institution.title': 'Register Your Institution',
-    'landing.institution.description': 'Connect your school or organization to our transportation network',
+    'landing.institution.title': 'Register Your Organization',
+    'landing.institution.description': 'Connect your organization to our transportation network',
     'landing.institution.action': 'Get Started',
+    'landing.institution.manageTitle': 'Manage Your Organization',
+    'landing.institution.manageDescription': 'Access your organization dashboard and manage your fleet',
+    'landing.institution.manageAction': 'Go to Dashboard',
     'landing.cityBus.title': 'Track City Bus Routes',
     'landing.cityBus.description': 'Real-time updates for public transportation and route optimization',
     'landing.cityBus.action': 'Explore Routes',
@@ -93,6 +96,15 @@ const translations = {
     
     // Search Results
     'passenger.availableRoutes': 'Available Routes ({count})',
+    'passenger.searchResults': 'Search Results',
+    'passenger.availableBuses': 'Available Buses',
+    'passenger.loadingResults': 'Loading search results...',
+    'passenger.backToSearch': 'Back to Search',
+    'passenger.routeFrom': 'from',
+    'passenger.routeTo': 'to',
+    'passenger.tapBusToTrack': 'Tap on any bus to start live tracking',
+    'passenger.phone': 'Phone',
+    'passenger.quality': 'Match Quality',
     'passenger.online': 'Online',
     'passenger.offline': 'Offline',
     'passenger.driver': 'Driver',
@@ -155,7 +167,7 @@ const translations = {
 
     // AI Chatbot
     'chatbot.title': 'AI Assistant',
-    'chatbot.welcome': 'Hello! I\'m your BusBuddy AI assistant. Tap the microphone button and speak to ask me anything!',
+    'chatbot.welcome': 'Hello! I\'m your BusBuddy AI assistant. Tell me where you want to go by saying something like "I want to go from Central Station to Airport" and I\'ll help you find buses!',
     'chatbot.tapToSpeak': 'Tap the microphone to speak',
     'chatbot.recording': 'Recording... Speak now',
     'chatbot.processing': 'Processing your audio...',
@@ -164,6 +176,18 @@ const translations = {
     'chatbot.microphoneError': 'Could not access microphone',
     'chatbot.transcriptionError': 'Failed to transcribe audio',
     'chatbot.audioError': 'Error processing audio',
+    'chatbot.routeFound': 'Great! I found your route',
+    'chatbot.searchingBuses': 'Let me search for available buses on this route...',
+    'chatbot.routeUnclear': 'I heard what you said, but I couldn\'t clearly identify the source and destination.',
+    'chatbot.pleaseSpecify': 'Please try again and clearly mention where you want to go FROM and TO.',
+    'chatbot.detectedLanguage': 'Detected language',
+    'chatbot.noBusesAvailable': 'Sorry, no buses are currently available for this route.',
+    'chatbot.tryDifferentRoute': 'Please try a different route or check back later.',
+    'chatbot.busesFound': 'Found {count}',
+    'chatbot.bus': 'bus',
+    'chatbot.buses': 'buses',
+    'chatbot.tapBusNumber': 'You can tap on any bus number to view live tracking!',
+    'chatbot.redirectingToResults': 'Taking you to search results...',
 
     // Driver Page
     'driver.dashboard': 'Driver Dashboard',
@@ -185,9 +209,9 @@ const translations = {
     'driver.missionControl': 'Mission Control',
     'driver.systemDiagnostics': 'System Diagnostics',
 
-    // Institution Registration
-    'institution.title': 'Institution Registration',
-    'institution.subtitle': 'Register your school, college, or organization with BusBuddy',
+    // Organization Registration
+    'institution.title': 'Organization Registration',
+    'institution.subtitle': 'Register your organization or business with BusBuddy',
     'institution.email': 'Email Address',
     'institution.password': 'Password',
     'institution.orgName': 'Organization Name',
@@ -196,25 +220,27 @@ const translations = {
     'institution.city': 'City/Town/Village',
     'institution.location': 'Location',
     'institution.website': 'Website URL',
-    'institution.enterEmail': 'Enter institution email',
+    'institution.enterEmail': 'Enter organization email',
     'institution.createPassword': 'Create a secure password',
-    'institution.enterOrgName': 'Enter your institution name',
+    'institution.enterOrgName': 'Enter your organization name',
     'institution.enterPhone': 'Enter contact number',
     'institution.selectState': 'Select your state',
     'institution.searchCity': 'Search cities in',
     'institution.selectStateFirst': 'Please select a state first',
-    'institution.enterWebsite': 'https://your-institution-website.com',
+    'institution.enterWebsite': 'https://your-organization-website.com',
     'institution.fetchLocation': 'Fetch Current Location',
     'institution.locationFetched': 'Location Fetched',
     'institution.fetchingLocation': 'Fetching Location...',
-    'institution.registerButton': 'Register Institution',
+    'institution.registerButton': 'Register Organization',
     'institution.submittingRegistration': 'Submitting Registration...',
     'institution.missingInfo': 'Missing Information',
     'institution.fillRequired': 'Please fill in all required fields',
     'institution.registrationSuccess': 'Registration Successful',
-    'institution.registrationSuccessDesc': 'Your institution has been registered successfully!',
+    'institution.registrationSuccessDesc': 'Your organization has been registered successfully!',
     'institution.registrationFailed': 'Registration Failed',
     'institution.registrationFailedDesc': 'An error occurred during registration. Please try again.',
+    'institution.authRequired': 'Authentication Required',
+    'institution.pleaseLogin': 'Please login to register your organization.',
 
     // Bus Search
     'busSearch.from': 'From',
@@ -260,6 +286,28 @@ const translations = {
     'demo.title': 'Demo',
     'demo.subtitle': 'Try out our features',
 
+    // Organization Dashboard
+    'organization.dashboard': 'Organization Dashboard',
+    'organization.welcome': 'Welcome to Your Organization Dashboard',
+    'organization.manageNetwork': 'Manage your transportation network',
+    'organization.registrationSuccess': 'Registration successful! Your organization is now part of the BusBuddy network.',
+    'organization.fleetManagement': 'Fleet Management',
+    'organization.fleetDescription': 'Add and manage your bus fleet, assign drivers, and monitor vehicle status.',
+    'organization.routeManagement': 'Route Management',
+    'organization.routeDescription': 'Create and manage bus routes, stops, and schedules for your network.',
+    'organization.analytics': 'Analytics',
+    'organization.analyticsDescription': 'View detailed analytics about your transportation operations and usage.',
+    'organization.quickActions': 'Quick Actions',
+    'organization.addBus': 'Add Bus',
+    'organization.createRoute': 'Create Route',
+    'organization.manageDrivers': 'Manage Drivers',
+    'organization.settings': 'Settings',
+    'organization.activeBuses': 'Active Buses',
+    'organization.activeRoutes': 'Active Routes',
+    'organization.comingSoon': 'Coming Soon',
+    'organization.featuresInDevelopment': 'Dashboard features are being developed',
+    'organization.featuresAvailableSoon': 'Fleet management, route creation, and analytics features will be available soon.',
+
     // General messages
     'messages.featureComingSoon': 'feature will be available soon!',
   },
@@ -287,9 +335,12 @@ const translations = {
     'landing.trackChild.title': 'अपने बच्चे की बस को ट्रैक करें',
     'landing.trackChild.description': 'रियल-टाइम स्कूल बस ट्रैकिंग और नोटिफिकेशन के साथ अपने बच्चों को सुरक्षित रखें',
     'landing.trackChild.action': 'ट्रैकिंग शुरू करें',
-    'landing.institution.title': 'अपनी संस्था का पंजीकरण करें',
-    'landing.institution.description': 'अपने स्कूल या संगठन को हमारे परिवहन नेटवर्क से जोड़ें',
+    'landing.institution.title': 'अपने संगठन का पंजीकरण करें',
+    'landing.institution.description': 'अपने संगठन को हमारे परिवहन नेटवर्क से जोड़ें',
     'landing.institution.action': 'शुरू करें',
+    'landing.institution.manageTitle': 'अपना संगठन प्रबंधित करें',
+    'landing.institution.manageDescription': 'अपने संगठन डैशबोर्ड तक पहुंचें और अपने बेड़े का प्रबंधन करें',
+    'landing.institution.manageAction': 'डैशबोर्ड पर जाएं',
     'landing.cityBus.title': 'शहरी बस रूट ट्रैक करें',
     'landing.cityBus.description': 'सार्वजनिक परिवहन और रूट अनुकूलन के लिए रियल-टाइम अपडेट',
     'landing.cityBus.action': 'रूट एक्सप्लोर करें',
@@ -343,6 +394,15 @@ const translations = {
     
     // Search Results
     'passenger.availableRoutes': 'उपलब्ध रूट्स ({count})',
+    'passenger.searchResults': 'खोज परिणाम',
+    'passenger.availableBuses': 'उपलब्ध बसें',
+    'passenger.loadingResults': 'खोज परिणाम लोड हो रहे हैं...',
+    'passenger.backToSearch': 'खोज पर वापस जाएं',
+    'passenger.routeFrom': 'से',
+    'passenger.routeTo': 'तक',
+    'passenger.tapBusToTrack': 'लाइव ट्रैकिंग शुरू करने के लिए किसी भी बस पर टैप करें',
+    'passenger.phone': 'फोन',
+    'passenger.quality': 'मैच गुणवत्ता',
     'passenger.online': 'ऑनलाइन',
     'passenger.offline': 'ऑफलाइन',
     'passenger.driver': 'ड्राइवर',
@@ -405,7 +465,7 @@ const translations = {
 
     // AI Chatbot
     'chatbot.title': 'AI सहायक',
-    'chatbot.welcome': 'नमस्ते! मैं आपका BusBuddy AI सहायक हूँ। माइक्रोफोन बटन दबाएं और मुझसे कुछ भी पूछें!',
+    'chatbot.welcome': 'नमस्ते! मैं आपका BusBuddy AI सहायक हूँ। मुझे बताएं कि आप कहाँ जाना चाहते हैं, जैसे "मैं सेंट्रल स्टेशन से एयरपोर्ट जाना चाहता हूँ" और मैं आपको बस खोजने में मदद करूंगा!',
     'chatbot.tapToSpeak': 'बोलने के लिए माइक्रोफोन दबाएं',
     'chatbot.recording': 'रिकॉर्डिंग... अब बोलें',
     'chatbot.processing': 'आपका ऑडियो प्रोसेस कर रहा हूँ...',
@@ -414,6 +474,18 @@ const translations = {
     'chatbot.microphoneError': 'माइक्रोफोन तक पहुंच नहीं मिली',
     'chatbot.transcriptionError': 'ऑडियो ट्रांस्क्राइब करने में असफल',
     'chatbot.audioError': 'ऑडियो प्रोसेसिंग में त्रुटि',
+    'chatbot.routeFound': 'बहुत बढ़िया! मुझे आपका रूट मिल गया',
+    'chatbot.searchingBuses': 'मैं इस रूट पर उपलब्ध बसों की खोज कर रहा हूँ...',
+    'chatbot.routeUnclear': 'मैंने आपकी बात सुनी, लेकिन मुझे स्पष्ट रूप से शुरुआती और गंतव्य स्थान की पहचान नहीं हो सकी।',
+    'chatbot.pleaseSpecify': 'कृपया फिर से कोशिश करें और स्पष्ट रूप से बताएं कि आप कहाँ से कहाँ जाना चाहते हैं।',
+    'chatbot.detectedLanguage': 'पहचानी गई भाषा',
+    'chatbot.noBusesAvailable': 'क्षमा करें, इस रूट पर फिलहाल कोई बस उपलब्ध नहीं है।',
+    'chatbot.tryDifferentRoute': 'कृपया कोई अलग रूट ट्राई करें या बाद में चेक करें।',
+    'chatbot.busesFound': 'मिली {count}',
+    'chatbot.bus': 'बस',
+    'chatbot.buses': 'बसें',
+    'chatbot.tapBusNumber': 'आप किसी भी बस नंबर पर टैप करके लाइव ट्रैकिंग देख सकते हैं!',
+    'chatbot.redirectingToResults': 'आपको खोज परिणामों पर ले जा रहा हूँ...',
 
     // Driver Page
     'driver.dashboard': 'ड्राइवर डैशबोर्ड',
@@ -432,9 +504,9 @@ const translations = {
     'driver.manageBus': 'बस प्रबंधन',
     'driver.tripManagement': 'यात्रा प्रबंधन',
 
-    // Institution Registration
-    'institution.title': 'संस्था पंजीकरण',
-    'institution.subtitle': 'अपने स्कूल, कॉलेज या संगठन को BusBuddy के साथ पंजीकृत करें',
+    // Organization Registration
+    'institution.title': 'संगठन पंजीकरण',
+    'institution.subtitle': 'अपने संगठन या व्यवसाय को BusBuddy के साथ पंजीकृत करें',
     'institution.email': 'ईमेल पता',
     'institution.password': 'पासवर्ड',
     'institution.orgName': 'संगठन का नाम',
@@ -443,25 +515,27 @@ const translations = {
     'institution.city': 'शहर/कस्बा/गांव',
     'institution.location': 'स्थान',
     'institution.website': 'वेबसाइट URL',
-    'institution.enterEmail': 'संस्था का ईमेल दर्ज करें',
+    'institution.enterEmail': 'संगठन का ईमेल दर्ज करें',
     'institution.createPassword': 'एक सुरक्षित पासवर्ड बनाएं',
-    'institution.enterOrgName': 'अपनी संस्था का नाम दर्ज करें',
+    'institution.enterOrgName': 'अपने संगठन का नाम दर्ज करें',
     'institution.enterPhone': 'संपर्क नंबर दर्ज करें',
     'institution.selectState': 'अपना राज्य चुनें',
     'institution.searchCity': 'शहर खोजें',
     'institution.selectStateFirst': 'कृपया पहले राज्य चुनें',
-    'institution.enterWebsite': 'https://आपकी-संस्था-वेबसाइट.com',
+    'institution.enterWebsite': 'https://आपकी-संगठन-वेबसाइट.com',
     'institution.fetchLocation': 'वर्तमान स्थान प्राप्त करें',
     'institution.locationFetched': 'स्थान प्राप्त हुआ',
     'institution.fetchingLocation': 'स्थान प्राप्त कर रहे हैं...',
-    'institution.registerButton': 'संस्था पंजीकृत करें',
+    'institution.registerButton': 'संगठन पंजीकृत करें',
     'institution.submittingRegistration': 'पंजीकरण जमा कर रहे हैं...',
     'institution.missingInfo': 'जानकारी गुम',
     'institution.fillRequired': 'कृपया सभी आवश्यक फ़ील्ड भरें',
     'institution.registrationSuccess': 'पंजीकरण सफल',
-    'institution.registrationSuccessDesc': 'आपकी संस्था सफलतापूर्वक पंजीकृत हो गई है!',
+    'institution.registrationSuccessDesc': 'आपका संगठन सफलतापूर्वक पंजीकृत हो गया है!',
     'institution.registrationFailed': 'पंजीकरण असफल',
     'institution.registrationFailedDesc': 'पंजीकरण के दौरान एक त्रुटि हुई। कृपया पुनः प्रयास करें।',
+    'institution.authRequired': 'प्रमाणीकरण आवश्यक',
+    'institution.pleaseLogin': 'अपना संगठन पंजीकृत करने के लिए कृपया लॉगिन करें।',
 
     // Bus Search
     'busSearch.from': 'से',
@@ -507,6 +581,28 @@ const translations = {
     'demo.title': 'डेमो',
     'demo.subtitle': 'हमारी सुविधाओं को आजमाएं',
 
+    // Organization Dashboard
+    'organization.dashboard': 'संगठन डैशबोर्ड',
+    'organization.welcome': 'आपके संगठन डैशबोर्ड में आपका स्वागत है',
+    'organization.manageNetwork': 'अपने परिवहन नेटवर्क का प्रबंधन करें',
+    'organization.registrationSuccess': 'पंजीकरण सफल! आपका संगठन अब BusBuddy नेटवर्क का हिस्सा है।',
+    'organization.fleetManagement': 'फ्लीट प्रबंधन',
+    'organization.fleetDescription': 'अपने बस फ्लीट को जोड़ें और प्रबंधित करें, ड्राइवरों को असाइन करें, और वाहन स्थिति की निगरानी करें।',
+    'organization.routeManagement': 'रूट प्रबंधन',
+    'organization.routeDescription': 'अपने नेटवर्क के लिए बस रूट, स्टॉप और शेड्यूल बनाएं और प्रबंधित करें।',
+    'organization.analytics': 'एनालिटिक्स',
+    'organization.analyticsDescription': 'अपने परिवहन संचालन और उपयोग के बारे में विस्तृत एनालिटिक्स देखें।',
+    'organization.quickActions': 'त्वरित कार्य',
+    'organization.addBus': 'बस जोड़ें',
+    'organization.createRoute': 'रूट बनाएं',
+    'organization.manageDrivers': 'ड्राइवर प्रबंधन',
+    'organization.settings': 'सेटिंग्स',
+    'organization.activeBuses': 'सक्रिय बसें',
+    'organization.activeRoutes': 'सक्रिय रूट्स',
+    'organization.comingSoon': 'जल्द आ रहा है',
+    'organization.featuresInDevelopment': 'डैशबोर्ड सुविधाएं विकसित की जा रही हैं',
+    'organization.featuresAvailableSoon': 'फ्लीट प्रबंधन, रूट निर्माण और एनालिटिक्स सुविधाएं जल्द उपलब्ध होंगी।',
+
     // General messages
     'messages.featureComingSoon': 'सुविधा जल्द उपलब्ध होगी!',
   }
@@ -514,18 +610,24 @@ const translations = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>('en')
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Load saved language from localStorage
-    const savedLanguage = localStorage.getItem('busbuddy-language') as Language
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi')) {
-      setLanguage(savedLanguage)
+    setMounted(true)
+    // Load saved language from localStorage only on client side
+    if (typeof window !== 'undefined') {
+      const savedLanguage = localStorage.getItem('busbuddy-language') as Language
+      if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'hi')) {
+        setLanguage(savedLanguage)
+      }
     }
   }, [])
 
   const handleSetLanguage = (lang: Language) => {
     setLanguage(lang)
-    localStorage.setItem('busbuddy-language', lang)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('busbuddy-language', lang)
+    }
   }
 
   const t = (key: string): string => {

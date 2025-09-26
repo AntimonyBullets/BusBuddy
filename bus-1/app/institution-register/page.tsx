@@ -84,12 +84,28 @@ export default function InstitutionRegisterPage() {
         return
       }
 
-      // Make API call to register the institution
+      // Get current user and auth token
+      const authService = AuthService.getInstance()
+      const currentUser = authService.getCurrentUser()
+      const accessToken = authService.getAccessToken()
+      
+      if (!currentUser || !accessToken) {
+        toast({
+          title: t('institution.authRequired'),
+          description: t('institution.pleaseLogin'),
+          variant: "destructive",
+        })
+        router.push("/auth")
+        return
+      }
+
+      // Make API call to register the organization
       const apiUrl = process.env.NEXT_PUBLIC_API_URL
       const response = await fetch(`${apiUrl}/api/orgs/create-organization`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           orgName: formData.name,
@@ -106,12 +122,19 @@ export default function InstitutionRegisterPage() {
       const result = await response.json()
 
       if (response.ok && result.status === "success") {
+        // Save organization email to localStorage for future use
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('organization-email', formData.email)
+        }
+        
         toast({
           title: t('institution.registrationSuccess'),
           description: t('institution.registrationSuccessDesc'),
         })
-        // Redirect back to main page
-        router.push("/")
+        // Redirect to organization dashboard
+        setTimeout(() => {
+          router.push("/organization")
+        }, 1500) // Give time for the success toast to be seen
       } else {
         throw new Error(result.message || "Registration failed")
       }

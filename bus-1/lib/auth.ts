@@ -50,7 +50,7 @@ export class AuthService {
     const data: AuthResponse = await response.json()
 
     if (data.success) {
-      this.setTokens(data.data.accessToken, data.data.refreshToken)
+      this.setTokens(data.data.accessToken, data.data.refreshToken, data.data.userLoggedIn)
     }
 
     return data
@@ -68,7 +68,7 @@ export class AuthService {
     const data: AuthResponse = await response.json()
 
     if (data.success) {
-      this.setTokens(data.data.accessToken, data.data.refreshToken)
+      this.setTokens(data.data.accessToken, data.data.refreshToken, data.data.userLoggedIn)
     }
 
     return data
@@ -91,13 +91,16 @@ export class AuthService {
     this.clearTokens()
   }
 
-  private setTokens(accessToken: string, refreshToken: string): void {
+  private setTokens(accessToken: string, refreshToken: string, user?: User): void {
     this.accessToken = accessToken
     this.refreshToken = refreshToken
 
     if (typeof window !== "undefined") {
       localStorage.setItem("accessToken", accessToken)
       localStorage.setItem("refreshToken", refreshToken)
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user))
+      }
     }
   }
 
@@ -108,6 +111,7 @@ export class AuthService {
     if (typeof window !== "undefined") {
       localStorage.removeItem("accessToken")
       localStorage.removeItem("refreshToken")
+      localStorage.removeItem("user")
     }
   }
 
@@ -117,5 +121,20 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.accessToken
+  }
+
+  getCurrentUser(): User | null {
+    if (typeof window !== "undefined") {
+      const userData = localStorage.getItem("user")
+      if (userData) {
+        try {
+          return JSON.parse(userData)
+        } catch (error) {
+          console.error("Error parsing user data:", error)
+          return null
+        }
+      }
+    }
+    return null
   }
 }
