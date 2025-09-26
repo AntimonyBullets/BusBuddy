@@ -10,6 +10,8 @@ import { DriverConnectionDebug } from "@/components/driver/driver-connection-deb
 import { Button } from "@/components/ui/button"
 import { Bus, ArrowLeft, Activity, Users, MapPin, Clock } from "lucide-react"
 import { Toaster } from "@/components/ui/toaster"
+import { useLanguage } from "@/contexts/language-context"
+import { LanguageSelector } from "@/components/ui/language-selector"
 
 interface DriverSession {
   busId: string
@@ -23,6 +25,7 @@ export default function DriverPage() {
   const [driverSession, setDriverSession] = useState<DriverSession | null>(null)
   const [currentTime, setCurrentTime] = useState(new Date())
   const router = useRouter()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
@@ -88,8 +91,8 @@ export default function DriverPage() {
           <div className="flex items-center justify-center space-x-3 mb-4" style={{color: '#212153'}}>
             <Bus className="h-8 w-8 animate-pulse" style={{color: '#212153'}} />
             <div>
-              <p className="text-xl font-bold tracking-wide">Loading Dashboard</p>
-              <p className="text-sm text-gray-600 animate-pulse">Initializing driver controls...</p>
+              <p className="text-xl font-bold tracking-wide">{t('driver.loadingDashboard')}</p>
+              <p className="text-sm text-gray-600 animate-pulse">{t('driver.initializingControls')}</p>
             </div>
           </div>
 
@@ -125,7 +128,7 @@ export default function DriverPage() {
       <header className="relative">
         <div className="absolute inset-0 bg-white/80 backdrop-blur-xl"></div>
 
-                <div className="p-4 sm:p-6 sticky top-0 z-10 border-b border-blue-100 safe-area-top">
+                <div className="sticky top-0 z-10 border-b border-blue-100 safe-area-top" style={{padding: '16px'}}>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 max-w-7xl mx-auto">
             <div className="flex items-center space-x-3 sm:space-x-4">
               <button
@@ -146,8 +149,8 @@ export default function DriverPage() {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight" style={{color: '#212153'}}>Bus Command Center</h1>
-                  <p className="text-xs sm:text-sm text-gray-600">Professional Transit Control System</p>
+                  <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-tight" style={{color: '#212153'}}>{t('driver.busCommandCenter')}</h1>
+                  <p className="text-xs sm:text-sm text-gray-600">{t('driver.professionalTransitControl')}</p>
                 </div>
               </div>
             </div>
@@ -158,12 +161,14 @@ export default function DriverPage() {
                 <div className="text-xs text-gray-600">{currentTime.toLocaleDateString()}</div>
               </div>
 
+              <LanguageSelector />
+
               <Button
                 onClick={handleLogout}
                 className="px-3 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white rounded-xl shadow-lg transition-all duration-200 border-0 font-medium text-sm sm:text-base"
               >
-                <span className="hidden sm:inline">Logout</span>
-                <span className="sm:hidden">Exit</span>
+                <span className="hidden sm:inline">{t('common.logout')}</span>
+                <span className="sm:hidden">{t('common.exit')}</span>
               </Button>
             </div>
           </div>
@@ -178,8 +183,8 @@ export default function DriverPage() {
                 <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">System Status</p>
-                <p className="text-sm font-bold" style={{color: '#212153'}}>Online</p>
+                <p className="text-xs text-gray-600">{t('driver.systemStatus')}</p>
+                <p className="text-sm font-bold" style={{color: '#212153'}}>{t('driver.online')}</p>
               </div>
             </div>
           </div>
@@ -190,7 +195,7 @@ export default function DriverPage() {
                 <Users className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Passengers</p>
+                <p className="text-xs text-gray-600">{t('driver.passengers')}</p>
                 <p className="text-sm font-bold" style={{color: '#212153'}}>0</p>
               </div>
             </div>
@@ -202,8 +207,8 @@ export default function DriverPage() {
                 <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">GPS Status</p>
-                <p className="text-sm font-bold" style={{color: '#212153'}}>Active</p>
+                <p className="text-xs text-gray-600">{t('driver.gpsStatus')}</p>
+                <p className="text-sm font-bold" style={{color: '#212153'}}>{t('driver.active')}</p>
               </div>
             </div>
           </div>
@@ -214,7 +219,7 @@ export default function DriverPage() {
                 <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-xs text-gray-600">Trip Time</p>
+                <p className="text-xs text-gray-600">{t('driver.tripTime')}</p>
                 <p className="text-sm font-bold" style={{color: '#212153'}}>00:00:00</p>
               </div>
             </div>
@@ -239,7 +244,7 @@ export default function DriverPage() {
                 </svg>
               </div>
               <h2 className="text-lg sm:text-xl font-bold" style={{color: '#212153'}}>
-                Driver Profile
+                {t('driver.driverProfile')}
               </h2>
             </div>
 
@@ -261,7 +266,7 @@ export default function DriverPage() {
                 </svg>
               </div>
               <h2 className="text-xl font-bold transition-colors" style={{color: '#212153'}}>
-                Mission Control
+                {t('driver.missionControl')}
               </h2>
             </div>
 
@@ -288,7 +293,7 @@ export default function DriverPage() {
               </svg>
             </div>
             <h2 className="text-xl font-bold transition-colors" style={{color: '#212153'}}>
-              System Diagnostics
+              {t('driver.systemDiagnostics')}
             </h2>
           </div>
 

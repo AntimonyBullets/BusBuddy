@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Clock, MapPin, ArrowRight, X } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 interface RecentSearch {
   id: string
@@ -18,6 +19,7 @@ interface RecentSearchesProps {
 
 export function RecentSearches({ onSearchSelect }: RecentSearchesProps) {
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([])
+  const { t } = useLanguage()
 
   useEffect(() => {
     // Load recent searches from localStorage
@@ -62,11 +64,15 @@ export function RecentSearches({ onSearchSelect }: RecentSearchesProps) {
     const days = Math.floor(hours / 24)
 
     if (days > 0) {
-      return `${days} day${days > 1 ? "s" : ""} ago`
+      return days === 1 
+        ? t('passenger.dayAgo').replace('{days}', days.toString())
+        : t('passenger.daysAgo').replace('{days}', days.toString())
     } else if (hours > 0) {
-      return `${hours} hour${hours > 1 ? "s" : ""} ago`
+      return hours === 1
+        ? t('passenger.hourAgo').replace('{hours}', hours.toString())
+        : t('passenger.hoursAgo').replace('{hours}', hours.toString())
     } else {
-      return "Just now"
+      return t('passenger.justNow')
     }
   }
 

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Search, MapPin, ArrowRight, Users, Clock, Route, Zap, ArrowUp, ArrowDown } from "lucide-react"
 import { BusApiService, type BusSearchResult } from "@/lib/bus-api"
 import { useToast } from "@/hooks/use-toast"
+import { useLanguage } from "@/contexts/language-context"
 
 interface BusSearchProps {
   onBusSelect: (bus: BusSearchResult) => void
@@ -18,12 +19,13 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
   const [searchResults, setSearchResults] = useState<BusSearchResult[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
+  const { t } = useLanguage()
 
   const handleSearch = async () => {
     if (!startStop.trim() || !endStop.trim()) {
       toast({
-        title: "Missing information",
-        description: "Please enter both start and end stops",
+        title: t('passenger.missingInformation'),
+        description: t('passenger.enterBothStops'),
         variant: "destructive",
       })
       return
@@ -37,14 +39,14 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
 
       if (results.length === 0) {
         toast({
-          title: "No buses found",
-          description: `No buses found from ${startStop} to ${endStop}`,
+          title: t('passenger.noBusesFound'),
+          description: t('passenger.noBusesFoundDesc').replace('{from}', startStop).replace('{to}', endStop),
         })
       }
     } catch (error) {
       toast({
-        title: "Search failed",
-        description: "Unable to search for buses. Please try again.",
+        title: t('passenger.searchFailed'),
+        description: t('passenger.searchFailedDesc'),
         variant: "destructive",
       })
     } finally {
@@ -57,7 +59,7 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
   }
 
   const getStatusText = (isOnline: boolean) => {
-    return isOnline ? "Online" : "Offline"
+    return isOnline ? t('passenger.online') : t('passenger.offline')
   }
 
   const getCapacityColor = (current: number, total: number) => {
@@ -83,12 +85,12 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
               <div className="p-1 sm:p-1.5 rounded-lg" style={{backgroundColor: '#059669', opacity: 0.1}}>
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4" style={{color: '#059669'}} />
               </div>
-              <span className="text-sm sm:text-base">From (Start Stop)</span>
+              <span className="text-sm sm:text-base">{t('passenger.fromStartStop')}</span>
             </Label>
             <div className="relative group">
               <Input
                 id="start-stop"
-                placeholder="Enter start stop name"
+                placeholder={t('passenger.enterStartStop')}
                 value={startStop}
                 onChange={(e) => setStartStop(e.target.value)}
                 className="relative bg-white border-gray-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-10 sm:h-12 text-base sm:text-lg transition-all duration-300"
@@ -115,12 +117,12 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
               <div className="p-1 sm:p-1.5 rounded-lg" style={{backgroundColor: '#ef4444', opacity: 0.1}}>
                 <MapPin className="h-3 w-3 sm:h-4 sm:w-4" style={{color: '#ef4444'}} />
               </div>
-              <span className="text-sm sm:text-base">To (Destination Stop)</span>
+              <span className="text-sm sm:text-base">{t('passenger.toDestinationStop')}</span>
             </Label>
             <div className="relative group">
               <Input
                 id="end-stop"
-                placeholder="Enter destination stop name"
+                placeholder={t('passenger.enterDestinationStop')}
                 value={endStop}
                 onChange={(e) => setEndStop(e.target.value)}
                 className="relative bg-white border-gray-300 placeholder:text-gray-500 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl h-10 sm:h-12 text-base sm:text-lg transition-all duration-300"
@@ -138,12 +140,12 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white mr-2 sm:mr-3"></div>
-                <span className="text-sm sm:text-base">Searching Routes...</span>
+                <span className="text-sm sm:text-base">{t('passenger.searchingRoutes')}</span>
               </>
             ) : (
               <>
                 <Search className="h-4 w-4 sm:h-5 sm:w-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform duration-300" />
-                <span className="text-sm sm:text-base">Find My Bus</span>
+                <span className="text-sm sm:text-base">{t('passenger.findMyBus')}</span>
               </>
             )}
           </Button>
@@ -159,7 +161,7 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
                 <Route className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
               </div>
             </div>
-            <h3 className="text-lg sm:text-xl font-bold" style={{color: '#212153'}}>Available Routes ({searchResults.length})</h3>
+            <h3 className="text-lg sm:text-xl font-bold" style={{color: '#212153'}}>{t('passenger.availableRoutes').replace('{count}', searchResults.length.toString())}</h3>
           </div>
 
           <div className="grid gap-3 sm:gap-4">
@@ -211,14 +213,14 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
                         <div className="p-0.5 sm:p-1 rounded" style={{backgroundColor: '#212153', opacity: 0.1}}>
                           <Users className="h-2.5 w-2.5 sm:h-3 sm:w-3" style={{color: '#212153'}} />
                         </div>
-                        <span className="text-xs sm:text-sm truncate">Driver: {bus.driverName}</span>
+                        <span className="text-xs sm:text-sm truncate">{t('passenger.driver')}: {bus.driverName}</span>
                       </div>
 
                       {bus.journeyDetails && (
                         <div className="flex items-center space-x-3 sm:space-x-4 text-xs sm:text-sm text-gray-500">
                           <div className="flex items-center space-x-1">
                             <MapPin className="h-2.5 w-2.5 sm:h-3 sm:w-3" style={{color: '#059669'}} />
-                            <span>{bus.journeyDetails.totalStopsInJourney} stops</span>
+                            <span>{bus.journeyDetails.totalStopsInJourney} {t('passenger.stops')}</span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <Clock className="h-2.5 w-2.5 sm:h-3 sm:w-3" style={{color: '#f59e0b'}} />
@@ -231,10 +233,10 @@ export function BusSearch({ onBusSelect }: BusSearchProps) {
                     <div className="mt-4 sm:mt-6 flex items-center justify-between">
                       <div className="flex items-center space-x-1 sm:space-x-2">
                         <Zap className="h-3 w-3 sm:h-4 sm:w-4" style={{color: '#f59e0b'}} />
-                        <span className="text-xs sm:text-sm text-gray-600 font-medium">Tap to track live</span>
+                        <span className="text-xs sm:text-sm text-gray-600 font-medium">{t('passenger.tapToTrackLive')}</span>
                       </div>
                       <div className="flex items-center space-x-1 sm:space-x-2 transition-colors duration-300" style={{color: '#212153'}}>
-                        <span className="text-xs sm:text-sm font-medium">Track Bus</span>
+                        <span className="text-xs sm:text-sm font-medium">{t('passenger.trackBus')}</span>
                         <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4 group-hover:translate-x-1 transition-transform duration-300" />
                       </div>
                     </div>

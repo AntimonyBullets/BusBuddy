@@ -5,6 +5,7 @@ import { OpenStreetMap } from "./index"
 import { useBusTracking } from "@/hooks/use-socket"
 import type { BusSearchResult } from "@/lib/bus-api"
 import { Clock, Users, Wifi, WifiOff, Zap, AlertCircle, CheckCircle, ArrowRight, Circle } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 interface BusTrackingViewProps {
   selectedBus: BusSearchResult
@@ -14,6 +15,7 @@ interface BusTrackingViewProps {
 
 export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusTrackingViewProps) {
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null)
+  const { t, language } = useLanguage()
 
   console.log("[v0] BusTrackingView rendered with currentView:", currentView)
 
@@ -34,7 +36,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
   }
 
   const getConnectionStatus = () => {
-    return isConnected && driverStatus === "online" ? "Connected" : "Disconnected"
+    return isConnected && driverStatus === "online" ? t('passenger.connected') : t('passenger.disconnected')
   }
 
   const getConnectionColor = () => {
@@ -42,11 +44,52 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
   }
 
   const mockStops = [
-    { id: 1, name: "Thob", status: "departed", time: "14:06", type: "start" },
-    { id: 2, name: "Bambhuon Ki Dhani", status: "departed", time: "14:08", type: "intermediate" },
-    { id: 3, name: "Dhaundaara", status: "arriving", time: "Arriving Now", speed: "0 km/h", type: "current" },
-    { id: 4, name: "Basni", status: "upcoming", time: "6 min", type: "upcoming" },
+    { id: 1, name: "Thob", nameHi: "थोब", status: "departed", time: "14:06", type: "start" },
+    { id: 2, name: "Bambhuon Ki Dhani", nameHi: "बांभुओं की ढाणी", status: "departed", time: "14:08", type: "intermediate" },
+    { id: 3, name: "Dhaundaara", nameHi: "धौंडारा", status: "arriving", time: "Arriving Now", speed: "0 km/h", type: "current" },
+    { id: 4, name: "Basni", nameHi: "बासनी", status: "upcoming", time: "6 min", type: "upcoming" },
   ]
+
+  const getStopStatusText = (status: string, time: string, speed?: string, type?: string) => {
+    switch (status) {
+      case "departed":
+        return t('passenger.departed') + (type === "start" ? ` • ${t('passenger.start')}` : "")
+      case "arriving":
+        return `${t('passenger.arrivingNow')} • ${speed}`
+      case "upcoming":
+        return time
+      default:
+        return time
+    }
+  }
+
+  const getStopTimeText = (status: string, time: string) => {
+    return status === "arriving" ? t('passenger.arriving') : time
+  }
+
+  const getStopName = (stop: { name: string; nameHi: string }) => {
+    return language === 'hi' ? stop.nameHi : stop.name
+  }
+
+  // Translation mapping for journey details stops
+  const stopNameTranslations: { [key: string]: string } = {
+    'Main Station': 'मुख्य स्टेशन',
+    'Bus Terminal': 'बस टर्मिनल',
+    'City Center': 'शहर केंद्र',
+    'Railway Station': 'रेलवे स्टेशन',
+    'Hospital': 'अस्पताल',
+    'University': 'विश्वविद्यालय',
+    'Market': 'बाज़ार',
+    'Airport': 'हवाई अड्डा',
+    // Add more as needed
+  }
+
+  const translateStopName = (stopName: string) => {
+    if (language === 'hi' && stopNameTranslations[stopName]) {
+      return stopNameTranslations[stopName]
+    }
+    return stopName
+  }
 
   return (
     <div className="space-y-3 sm:space-y-4 lg:space-y-6">
@@ -105,7 +148,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                 <Clock className="h-3 w-3 sm:h-4 sm:w-4" style={{color: '#212153'}} />
               </div>
               <div>
-                <div className="font-bold" style={{color: '#212153'}}>{isConnected ? "Live" : "Offline"}</div>
+                <div className="font-bold" style={{color: '#212153'}}>{isConnected ? t('passenger.live') : t('passenger.offline')}</div>
               </div>
             </div>
           </div>
@@ -116,7 +159,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
             <div className="flex items-center justify-between text-xs sm:text-sm">
               <div className="flex items-center gap-2 text-gray-600">
                 <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span>Last update: {new Date(lastUpdate).toLocaleTimeString()}</span>
+                <span>{t('passenger.lastUpdate')}: {new Date(lastUpdate).toLocaleTimeString()}</span>
               </div>
             </div>
           </div>
@@ -137,8 +180,8 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                 <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
                   <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-6 text-center max-w-sm mx-auto shadow-xl">
                     <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 lg:h-12 lg:w-12 mx-auto mb-2 sm:mb-4" style={{color: '#f59e0b'}} />
-                    <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2" style={{color: '#212153'}}>Connection Lost</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Trying to reconnect to live updates...</p>
+                    <h3 className="text-sm sm:text-lg font-bold mb-1 sm:mb-2" style={{color: '#212153'}}>{t('passenger.connectionLost')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('passenger.reconnecting')}</p>
                   </div>
                 </div>
               )}
@@ -157,8 +200,8 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                     </div>
                   </div>
                   <div>
-                    <h3 className="text-base sm:text-lg font-bold" style={{color: '#212153'}}>Live Telemetry</h3>
-                    <p className="text-xs sm:text-sm text-gray-600">Real-time vehicle data</p>
+                    <h3 className="text-base sm:text-lg font-bold" style={{color: '#212153'}}>{t('passenger.liveTelemetry')}</h3>
+                    <p className="text-xs sm:text-sm text-gray-600">{t('passenger.realTimeVehicleData')}</p>
                   </div>
                 </div>
                 
@@ -167,7 +210,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                     <div className="w-2 h-2 rounded-full animate-pulse" style={{backgroundColor: '#059669'}}></div>
                     <div className="absolute inset-0 w-2 h-2 rounded-full animate-ping opacity-75" style={{backgroundColor: '#059669'}}></div>
                   </div>
-                  <span className="text-xs font-medium" style={{color: '#059669'}}>Broadcasting Live</span>
+                  <span className="text-xs font-medium" style={{color: '#059669'}}>{t('passenger.broadcastingLive')}</span>
                 </div>
               </div>
               
@@ -183,7 +226,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                       <p className="text-lg sm:text-xl font-bold transition-colors" style={{color: '#212153'}}>
                         {busLocationData.speed.toFixed(1)}
                       </p>
-                      <p className="text-xs text-gray-600">Current Speed (km/h)</p>
+                      <p className="text-xs text-gray-600">{t('passenger.currentSpeed')}</p>
                     </div>
                   </div>
                 </div>
@@ -198,7 +241,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                       <p className="text-lg sm:text-xl font-bold transition-colors" style={{color: '#212153'}}>
                         {busLocationData.heading.toFixed(0)}°
                       </p>
-                      <p className="text-xs text-gray-600">Compass Heading</p>
+                      <p className="text-xs text-gray-600">{t('passenger.compassHeading')}</p>
                     </div>
                   </div>
                 </div>
@@ -213,7 +256,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                       <p className="text-lg sm:text-xl font-bold transition-colors" style={{color: '#212153'}}>
                         {selectedBus.connectedPassengers}/{selectedBus.capacity}
                       </p>
-                      <p className="text-xs text-gray-600">Connected Passengers</p>
+                      <p className="text-xs text-gray-600">{t('passenger.connectedPassengers')}</p>
                     </div>
                   </div>
                 </div>
@@ -227,7 +270,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                       <Clock className="h-4 w-4 sm:h-5 sm:w-5" style={{color: '#212153'}} />
                     </div>
                     <div>
-                      <p className="text-xs font-medium mb-1" style={{color: '#212153'}}>GPS Coordinates</p>
+                      <p className="text-xs font-medium mb-1" style={{color: '#212153'}}>{t('passenger.gpsCoordinates')}</p>
                       <p className="text-xs sm:text-sm font-mono text-gray-700 break-all">
                         {busLocationData.latitude.toFixed(6)}, {busLocationData.longitude.toFixed(6)}
                       </p>
@@ -235,7 +278,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                   </div>
                   
                   <div className="text-right">
-                    <p className="text-xs font-medium" style={{color: '#212153'}}>Last Updated</p>
+                    <p className="text-xs font-medium" style={{color: '#212153'}}>{t('passenger.lastUpdated')}</p>
                     <p className="text-xs sm:text-sm font-mono text-gray-700">
                       {new Date(busLocationData.lastUpdated).toLocaleTimeString()}
                     </p>
@@ -259,13 +302,13 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                   </div>
                 </div>
                 <div>
-                  <h3 className="text-base sm:text-lg font-bold" style={{color: '#212153'}}>Bus Timeline</h3>
+                  <h3 className="text-base sm:text-lg font-bold" style={{color: '#212153'}}>{t('passenger.busTimeline')}</h3>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    {selectedBus.journeyDetails?.fromStop.name} to {selectedBus.journeyDetails?.toStop.name}
+                    {translateStopName(selectedBus.journeyDetails?.fromStop.name || '')} to {translateStopName(selectedBus.journeyDetails?.toStop.name || '')}
                   </p>
                 </div>
               </div>
-              <div className="text-white px-3 py-1 rounded-full text-xs font-medium" style={{background: 'linear-gradient(to right, #212153, #1e1b4b)'}}>Live</div>
+              <div className="text-white px-3 py-1 rounded-full text-xs font-medium" style={{background: 'linear-gradient(to right, #212153, #1e1b4b)'}}>{t('passenger.live')}</div>
             </div>
           </div>
 
@@ -291,7 +334,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
 
                     {/* Stop Details */}
                     <div>
-                      <div className="font-medium text-sm sm:text-base" style={{color: '#212153'}}>{stop.name}</div>
+                      <div className="font-medium text-sm sm:text-base" style={{color: '#212153'}}>{getStopName(stop)}</div>
                       <div
                         className={`text-xs sm:text-sm`}
                         style={{
@@ -299,17 +342,14 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
                                  stop.status === "arriving" ? '#212153' : '#9ca3af'
                         }}
                       >
-                        {stop.status === "departed" && "Departed"}
-                        {stop.status === "arriving" && `Arriving Now • ${stop.speed}`}
-                        {stop.status === "upcoming" && stop.time}
-                        {stop.type === "start" && " • Start"}
+                        {getStopStatusText(stop.status, stop.time, stop.speed, stop.type)}
                       </div>
                     </div>
                   </div>
 
                   {/* Time */}
                   <div className="text-xs sm:text-sm text-gray-600 font-medium">
-                    {stop.status === "arriving" ? "Arriving" : stop.time}
+                    {getStopTimeText(stop.status, stop.time)}
                   </div>
                 </div>
               ))}
@@ -325,9 +365,9 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
               <WifiOff className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
           </div>
-          <h3 className="text-lg sm:text-xl font-bold mb-2" style={{color: '#212153'}}>Connecting to Live Updates</h3>
+          <h3 className="text-lg sm:text-xl font-bold mb-2" style={{color: '#212153'}}>{t('passenger.connectingLiveUpdates')}</h3>
           <p className="text-sm sm:text-base text-gray-600 mb-4">
-            Establishing connection with the bus tracking system...
+            {t('passenger.establishingConnection')}
           </p>
           <div className="flex justify-center">
             <div className="flex space-x-1">
@@ -336,7 +376,7 @@ export function BusTrackingView({ selectedBus, onViewChange, currentView }: BusT
               <div className="w-2 h-2 rounded-full animate-bounce" style={{ backgroundColor: '#212153', animationDelay: "0.2s" }}></div>
             </div>
           </div>
-          <div className="mt-4 text-xs sm:text-sm text-gray-500">Make sure you have a stable internet connection</div>
+          <div className="mt-4 text-xs sm:text-sm text-gray-500">{t('passenger.stableInternetConnection')}</div>
         </div>
       )}
     </div>

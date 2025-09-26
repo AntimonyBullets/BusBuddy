@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast"
 import { AuthService } from "@/lib/auth"
 import { useLanguage } from "@/contexts/language-context"
 import { LanguageSelector } from "@/components/ui/language-selector"
+import { AIChatbot } from "@/components/ui/ai-chatbot"
 
 
 
@@ -270,6 +271,9 @@ export default function HeroPage() {
           </div>
         </div>
       </section>
+
+      {/* AI Chatbot */}
+      <AIChatbot />
 
     </div>
   )
