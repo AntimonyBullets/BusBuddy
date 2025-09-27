@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { AuthService } from "@/lib/auth"
+import { BusApiService } from "@/lib/bus-api"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -16,20 +17,34 @@ import { LanguageSelector } from "@/components/ui/language-selector"
 
 interface BusData {
   _id: string
-  ownerEmail: string
+  ownerOrg: {
+    _id: string
+    username: string
+    email: string
+    orgName: string
+  }
   busId: string
   busNumber: string
   routeName: string
   driverName: string
   driverPhone: string
+  secretKey: string
   capacity: number
+  currentOccupancy: number
+  currentLocation: {
+    latitude: number | null
+    longitude: number | null
+    lastUpdated: string
+  }
   route: {
     stops: Array<{
       name: string
       latitude: number
       longitude: number
       order: number
+      _id: string
     }>
+    routeCoordinates: Array<any>
   }
   isActive: boolean
   createdAt: string
@@ -48,11 +63,128 @@ export default function OrganizationDashboard() {
   const [isLoading, setIsLoading] = useState(true)
   const [mounted, setMounted] = useState(false)
   const [buses, setBuses] = useState<BusData[]>([])
+  const [busStats, setBusStats] = useState({
+    totalBuses: 0,
+    activeRoutes: 0,
+    totalDrivers: 0,
+    activeBuses: 0
+  })
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [isAddBusOpen, setIsAddBusOpen] = useState(false)
+  const [isEndTripOpen, setIsEndTripOpen] = useState(false)
+  const [selectedBusForEndTrip, setSelectedBusForEndTrip] = useState<BusData | null>(null)
+  const [endTripForm, setEndTripForm] = useState({
+    busId: '',
+    secretKey: ''
+  })
+  const [isEndingTrip, setIsEndingTrip] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { t } = useLanguage()
   const { toast } = useToast()
+
+  // Fetch organization buses
+  const fetchBuses = async (showRefreshing = false) => {
+    if (showRefreshing) setIsRefreshing(true)
+    
+    try {
+      const busService = BusApiService.getInstance()
+      const fetchedBuses = await busService.getOrganizationBuses()
+      console.log('Fetched buses:', fetchedBuses)
+      
+      setBuses(fetchedBuses)
+      
+      // Calculate stats
+      const totalBuses = fetchedBuses.length
+      const activeBuses = fetchedBuses.filter((bus: any) => bus.isActive).length
+      // For now, count buses that are active as "live buses" until GPS tracking is implemented
+      const liveBuses = fetchedBuses.filter((bus: any) => {
+        return bus.isActive && (
+          (bus.currentLocation.latitude !== null && bus.currentLocation.longitude !== null) ||
+          // Consider bus as "live" if it's active and has recent location update (even if coordinates are null)
+          (new Date(bus.currentLocation.lastUpdated) > new Date(Date.now() - 24 * 60 * 60 * 1000)) // within 24 hours
+        )
+      }).length
+      const uniqueRoutes = new Set(fetchedBuses.map((bus: any) => bus.routeName)).size
+      
+      setBusStats({
+        totalBuses,
+        activeRoutes: uniqueRoutes,
+        totalDrivers: liveBuses, // Using this field for live buses count
+        activeBuses
+      })
+      
+      setLastUpdated(new Date())
+    } catch (error) {
+      console.error('Error fetching buses:', error)
+      toast({
+        title: "Error",
+        description: "Failed to fetch buses. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      if (showRefreshing) setIsRefreshing(false)
+    }
+  }
+
+  // Handle End Trip
+  const handleEndTrip = (bus: BusData) => {
+    setSelectedBusForEndTrip(bus)
+    setEndTripForm({
+      busId: bus.busId,
+      secretKey: ''
+    })
+    setIsEndTripOpen(true)
+  }
+
+  const handleEndTripSubmit = async () => {
+    if (!endTripForm.busId || !endTripForm.secretKey) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in both Bus ID and Secret Key",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsEndingTrip(true)
+    
+    try {
+      const busService = BusApiService.getInstance()
+      const result = await busService.makeBusInactive(endTripForm.busId, endTripForm.secretKey)
+      
+      if (result.success) {
+        toast({
+          title: "Trip Ended Successfully",
+          description: result.message,
+          variant: "default",
+        })
+        
+        // Reset form and close dialog
+        setEndTripForm({ busId: '', secretKey: '' })
+        setIsEndTripOpen(false)
+        setSelectedBusForEndTrip(null)
+        
+        // Refresh bus data
+        fetchBuses()
+      } else {
+        toast({
+          title: "Failed to End Trip",
+          description: result.message,
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsEndingTrip(false)
+    }
+  }
 
   // Form state for Add Bus
   const [busForm, setBusForm] = useState({
@@ -96,7 +228,18 @@ export default function OrganizationDashboard() {
       }
     }
     
+    // Fetch buses data
+    fetchBuses()
+    
+    // Set up auto-refresh every 30 seconds
+    const interval = setInterval(() => {
+      fetchBuses()
+    }, 30000)
+    
     setIsLoading(false)
+    
+    // Cleanup interval on unmount
+    return () => clearInterval(interval)
   }, [router])
 
   const handleLogout = async () => {
@@ -313,13 +456,24 @@ export default function OrganizationDashboard() {
                 Manage your buses, routes, and transportation operations
               </p>
             </div>
-            <Button 
-              onClick={() => setIsAddBusOpen(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              <Bus className="h-5 w-5 mr-2" />
-              Add New Bus
-            </Button>
+            <div className="flex gap-3">
+              <Button 
+                onClick={() => fetchBuses(true)}
+                disabled={isRefreshing}
+                variant="outline"
+                className="px-4 py-2 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50"
+              >
+                <BarChart3 className={`h-5 w-5 mr-2 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span className="text-gray-700">{isRefreshing ? 'Refreshing...' : 'Refresh'}</span>
+              </Button>
+              <Button 
+                onClick={() => setIsAddBusOpen(true)}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Bus className="h-5 w-5 mr-2" />
+                Add New Bus
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -330,7 +484,7 @@ export default function OrganizationDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Total Buses</p>
-                  <p className="text-3xl font-bold text-blue-600">0</p>
+                  <p className="text-3xl font-bold text-blue-600">{busStats.totalBuses}</p>
                 </div>
                 <div className="p-3 bg-blue-100 rounded-xl">
                   <Bus className="h-6 w-6 text-blue-600" />
@@ -344,7 +498,7 @@ export default function OrganizationDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-600 text-sm font-medium">Active Routes</p>
-                  <p className="text-3xl font-bold text-green-600">0</p>
+                  <p className="text-3xl font-bold text-green-600">{busStats.activeRoutes}</p>
                 </div>
                 <div className="p-3 bg-green-100 rounded-xl">
                   <Route className="h-6 w-6 text-green-600" />
@@ -357,11 +511,11 @@ export default function OrganizationDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium">Total Drivers</p>
-                  <p className="text-3xl font-bold text-purple-600">0</p>
+                  <p className="text-gray-600 text-sm font-medium">Ready Buses</p>
+                  <p className="text-3xl font-bold text-purple-600">{busStats.totalDrivers}</p>
                 </div>
                 <div className="p-3 bg-purple-100 rounded-xl">
-                  <Users className="h-6 w-6 text-purple-600" />
+                  <MapPin className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
@@ -371,8 +525,17 @@ export default function OrganizationDashboard() {
         {/* Buses Table */}
         <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-200">
           <div className="p-6 border-b border-gray-200">
-            <h3 className="text-xl font-bold" style={{color: '#212153'}}>Your Buses</h3>
-            <p className="text-gray-600 text-sm mt-1">Manage and monitor your fleet</p>
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-xl font-bold" style={{color: '#212153'}}>Your Buses</h3>
+                <p className="text-gray-600 text-sm mt-1">Manage and monitor your fleet</p>
+              </div>
+              {lastUpdated && (
+                <div className="text-sm text-gray-500">
+                  Last updated: {lastUpdated.toLocaleTimeString()}
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="p-6">
@@ -400,6 +563,7 @@ export default function OrganizationDashboard() {
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Route</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Driver</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Capacity</th>
+                      <th className="text-left py-3 px-4 font-semibold text-gray-700">Location</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Status</th>
                       <th className="text-left py-3 px-4 font-semibold text-gray-700">Actions</th>
                     </tr>
@@ -407,23 +571,112 @@ export default function OrganizationDashboard() {
                   <tbody>
                     {buses.map((bus, index) => (
                       <tr key={bus._id} className="border-b border-gray-100 hover:bg-gray-50">
-                        <td className="py-4 px-4 font-medium">{bus.busNumber}</td>
-                        <td className="py-4 px-4 text-gray-600">{bus.routeName}</td>
-                        <td className="py-4 px-4 text-gray-600">{bus.driverName}</td>
-                        <td className="py-4 px-4 text-gray-600">{bus.capacity}</td>
                         <td className="py-4 px-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            bus.isActive 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {bus.isActive ? 'Active' : 'Inactive'}
-                          </span>
+                          <div>
+                            <div className="font-medium text-gray-900">{bus.busNumber}</div>
+                            <div className="text-xs text-gray-500">ID: {bus.busId}</div>
+                          </div>
                         </td>
                         <td className="py-4 px-4">
-                          <Button variant="outline" size="sm">
-                            Edit
-                          </Button>
+                          <div className="text-gray-600">{bus.routeName}</div>
+                          <div className="text-xs text-gray-500">
+                            {bus.route.stops.length} stops
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="text-gray-600">{bus.driverName}</div>
+                          <div className="text-xs text-gray-500">{bus.driverPhone}</div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="text-gray-600">
+                            {bus.currentOccupancy}/{bus.capacity}
+                          </div>
+                          <div className="text-xs text-gray-500">passengers</div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3 text-gray-400" />
+                            {bus.currentLocation.latitude !== null && bus.currentLocation.longitude !== null ? (
+                              <span className="text-xs text-green-600 font-medium">Live GPS</span>
+                            ) : bus.isActive ? (
+                              <span className="text-xs text-blue-600 font-medium">Ready</span>
+                            ) : (
+                              <span className="text-xs text-red-600">Offline</span>
+                            )}
+                          </div>
+                          {bus.currentLocation.lastUpdated && (
+                            <div className="text-xs text-gray-500">
+                              {(() => {
+                                const lastUpdate = new Date(bus.currentLocation.lastUpdated);
+                                const now = new Date();
+                                const diffHours = Math.floor((now.getTime() - lastUpdate.getTime()) / (1000 * 60 * 60));
+                                
+                                if (diffHours < 1) {
+                                  return 'Just updated';
+                                } else if (diffHours < 24) {
+                                  return `${diffHours}h ago`;
+                                } else {
+                                  return lastUpdate.toLocaleDateString();
+                                }
+                              })()}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex flex-col gap-1">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              bus.isActive 
+                                ? 'bg-green-100 text-green-800' 
+                                : 'bg-red-100 text-red-800'
+                            }`}>
+                              {bus.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                            {bus.currentLocation.latitude !== null && bus.currentLocation.longitude !== null ? (
+                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                GPS Live
+                              </span>
+                            ) : bus.isActive ? (
+                              <span className="px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                GPS Pending
+                              </span>
+                            ) : null}
+                          </div>
+                        </td>
+                        <td className="py-4 px-4">
+                          <div className="flex gap-2">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => bus.isActive && router.push(`/passenger/${bus.busId}`)}
+                              disabled={!bus.isActive}
+                              className={`transition-colors ${
+                                bus.isActive 
+                                  ? 'border-blue-300 text-blue-700 hover:bg-blue-50 hover:border-blue-400 hover:text-blue-800' 
+                                  : 'border-gray-300 text-gray-400 cursor-not-allowed opacity-50'
+                              }`}
+                            >
+                              View
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="border-green-300 text-green-700 hover:bg-green-50 hover:border-green-400 hover:text-green-800 transition-colors"
+                            >
+                              Edit
+                            </Button>
+                            {bus.isActive && (
+                              <Button 
+                                variant="destructive" 
+                                size="sm"
+                                onClick={() => {
+                                  console.log('End Trip button clicked for bus:', bus.busId);
+                                  handleEndTrip(bus);
+                                }}
+                              >
+                                End Trip
+                              </Button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -439,143 +692,143 @@ export default function OrganizationDashboard() {
 
       {/* Add Bus Dialog */}
       <Dialog open={isAddBusOpen} onOpenChange={setIsAddBusOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white">
-          <DialogHeader className="pb-6">
-            <DialogTitle className="text-2xl font-bold text-gray-900">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white p-8">
+          <DialogHeader className="pb-8 mb-6 border-b border-gray-100">
+            <DialogTitle className="text-2xl font-bold text-gray-900 mb-2">
               Add New Bus
             </DialogTitle>
-            <DialogDescription className="text-gray-600">
+            <DialogDescription className="text-gray-600 text-base">
               Fill in the details to add a new bus to your fleet
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
             {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Basic Information</h3>
               
-              <div>
-                <Label htmlFor="ownerEmail" className="text-gray-900 font-medium">Owner Email *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="ownerEmail" className="text-gray-900 font-medium text-sm">Owner Email *</Label>
                 <Input
                   id="ownerEmail"
                   type="email"
                   value={busForm.ownerEmail}
                   onChange={(e) => setBusForm(prev => ({...prev, ownerEmail: e.target.value}))}
                   placeholder="owner@example.com"
-                  className="bg-blue-50 border-blue-200 focus:border-blue-500 text-gray-900 placeholder:text-gray-500"
+                  className="bg-blue-50 border-blue-200 focus:border-blue-500 text-gray-900 placeholder:text-gray-500 h-12"
                 />
-                <p className="text-xs text-gray-600 mt-1">
+                <p className="text-xs text-gray-600 mt-2">
                   Auto-filled from your organization registration
                 </p>
               </div>
 
-              <div>
-                <Label htmlFor="busId" className="text-gray-900 font-medium">Bus ID *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="busId" className="text-gray-900 font-medium text-sm">Bus ID *</Label>
                 <Input
                   id="busId"
                   value={busForm.busId}
                   onChange={(e) => setBusForm(prev => ({...prev, busId: e.target.value}))}
                   placeholder="BUS001"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="secretKey" className="text-gray-900 font-medium">Secret Key *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="secretKey" className="text-gray-900 font-medium text-sm">Secret Key *</Label>
                 <Input
                   id="secretKey"
                   type="password"
                   value={busForm.secretKey}
                   onChange={(e) => setBusForm(prev => ({...prev, secretKey: e.target.value}))}
                   placeholder="Enter secret key"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="busNumber" className="text-gray-900 font-medium">Bus Number *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="busNumber" className="text-gray-900 font-medium text-sm">Bus Number *</Label>
                 <Input
                   id="busNumber"
                   value={busForm.busNumber}
                   onChange={(e) => setBusForm(prev => ({...prev, busNumber: e.target.value}))}
                   placeholder="RJ14PA1234"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="routeName" className="text-gray-900 font-medium">Route Name *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="routeName" className="text-gray-900 font-medium text-sm">Route Name *</Label>
                 <Input
                   id="routeName"
                   value={busForm.routeName}
                   onChange={(e) => setBusForm(prev => ({...prev, routeName: e.target.value}))}
                   placeholder="City Center to Airport"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
             </div>
 
             {/* Driver Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Driver Information</h3>
+            <div className="space-y-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Driver Information</h3>
               
-              <div>
-                <Label htmlFor="driverName" className="text-gray-900 font-medium">Driver Name *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="driverName" className="text-gray-900 font-medium text-sm">Driver Name *</Label>
                 <Input
                   id="driverName"
                   value={busForm.driverName}
                   onChange={(e) => setBusForm(prev => ({...prev, driverName: e.target.value}))}
                   placeholder="John Doe"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="driverPhone" className="text-gray-900 font-medium">Driver Phone *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="driverPhone" className="text-gray-900 font-medium text-sm">Driver Phone *</Label>
                 <Input
                   id="driverPhone"
                   type="tel"
                   value={busForm.driverPhone}
                   onChange={(e) => setBusForm(prev => ({...prev, driverPhone: e.target.value}))}
                   placeholder="9876543210"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="capacity" className="text-gray-900 font-medium">Bus Capacity *</Label>
+              <div className="space-y-2">
+                <Label htmlFor="capacity" className="text-gray-900 font-medium text-sm">Bus Capacity *</Label>
                 <Input
                   id="capacity"
                   type="number"
                   value={busForm.capacity}
                   onChange={(e) => setBusForm(prev => ({...prev, capacity: e.target.value}))}
                   placeholder="50"
-                  className="text-gray-900 placeholder:text-gray-500"
+                  className="text-gray-900 placeholder:text-gray-500 h-12"
                 />
               </div>
             </div>
           </div>
 
           {/* Route Stops */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Route Stops</h3>
+          <div className="space-y-6 mb-8">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-200">Route Stops</h3>
             
             {/* Add Stop Form */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-              <h4 className="font-medium mb-3 text-gray-900">Add Stop</h4>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                <div>
-                  <Label htmlFor="stopName" className="text-gray-900 font-medium">Stop Name</Label>
+            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-sm">
+              <h4 className="font-medium mb-4 text-gray-900">Add Stop</h4>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="stopName" className="text-gray-900 font-medium text-sm">Stop Name</Label>
                   <Input
                     id="stopName"
                     value={currentStop.name}
                     onChange={(e) => setCurrentStop(prev => ({...prev, name: e.target.value}))}
                     placeholder="Bus Stop Name"
-                    className="text-gray-900 placeholder:text-gray-500"
+                    className="text-gray-900 placeholder:text-gray-500 h-12"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="latitude" className="text-gray-900 font-medium">Latitude</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="latitude" className="text-gray-900 font-medium text-sm">Latitude</Label>
                   <Input
                     id="latitude"
                     type="number"
@@ -583,11 +836,11 @@ export default function OrganizationDashboard() {
                     value={currentStop.latitude}
                     onChange={(e) => setCurrentStop(prev => ({...prev, latitude: e.target.value}))}
                     placeholder="28.6139"
-                    className="text-gray-900 placeholder:text-gray-500"
+                    className="text-gray-900 placeholder:text-gray-500 h-12"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="longitude" className="text-gray-900 font-medium">Longitude</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="longitude" className="text-gray-900 font-medium text-sm">Longitude</Label>
                   <Input
                     id="longitude"
                     type="number"
@@ -595,16 +848,17 @@ export default function OrganizationDashboard() {
                     value={currentStop.longitude}
                     onChange={(e) => setCurrentStop(prev => ({...prev, longitude: e.target.value}))}
                     placeholder="77.2090"
-                    className="text-gray-900 placeholder:text-gray-500"
+                    className="text-gray-900 placeholder:text-gray-500 h-12"
                   />
                 </div>
                 <div className="flex items-end">
                   <Button 
                     onClick={handleAddStop} 
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                    disabled={!currentStop.name || !currentStop.latitude || !currentStop.longitude}
+                    className="w-full h-12 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:from-gray-400 disabled:to-gray-500 disabled:opacity-70 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <Plus className="h-4 w-4 mr-1" />
-                    Add Stop
+                    <Plus className="h-4 w-4 mr-2 text-white" />
+                    <span className="text-white font-semibold">Add Stop</span>
                   </Button>
                 </div>
               </div>
@@ -639,19 +893,19 @@ export default function OrganizationDashboard() {
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+          <div className="flex justify-end space-x-4 pt-8 mt-8 border-t border-gray-200">
             <Button 
               variant="outline" 
               onClick={() => setIsAddBusOpen(false)}
               disabled={isSubmitting}
-              className="px-6 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl"
+              className="px-8 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl font-medium h-12"
             >
               Cancel
             </Button>
             <Button 
               onClick={handleSubmitBus}
               disabled={isSubmitting}
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 font-medium h-12"
             >
               {isSubmitting ? (
                 <>
@@ -665,6 +919,103 @@ export default function OrganizationDashboard() {
                 </>
               )}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* End Trip Dialog */}
+      <Dialog open={isEndTripOpen} onOpenChange={(open) => {
+        console.log('End Trip Dialog open state:', open);
+        setIsEndTripOpen(open)
+        if (!open) {
+          setEndTripForm({ busId: '', secretKey: '' })
+          setSelectedBusForEndTrip(null)
+        }
+      }}>
+        <DialogContent className="max-w-md bg-white">
+          <DialogHeader className="pb-4">
+            <DialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <div className="p-2 bg-red-100 rounded-lg">
+                <Bus className="h-5 w-5 text-red-600" />
+              </div>
+              End Trip
+            </DialogTitle>
+            <DialogDescription className="text-gray-600">
+              {selectedBusForEndTrip && (
+                <>
+                  End trip for Bus #{selectedBusForEndTrip.busNumber} ({selectedBusForEndTrip.routeName})
+                  <br />
+                  Please verify your credentials to stop the trip.
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="endTripBusId" className="text-gray-900 font-medium">Bus ID</Label>
+              <Input
+                id="endTripBusId"
+                value={endTripForm.busId}
+                onChange={(e) => setEndTripForm(prev => ({...prev, busId: e.target.value}))}
+                placeholder="Enter Bus ID"
+                className="text-gray-900 placeholder:text-gray-500"
+                disabled={isEndingTrip}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="endTripSecretKey" className="text-gray-900 font-medium">Secret Key</Label>
+              <Input
+                id="endTripSecretKey"
+                type="password"
+                value={endTripForm.secretKey}
+                onChange={(e) => setEndTripForm(prev => ({...prev, secretKey: e.target.value}))}
+                placeholder="Enter Secret Key"
+                className="text-gray-900 placeholder:text-gray-500"
+                disabled={isEndingTrip}
+              />
+            </div>
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <div className="flex items-start gap-2">
+                <div className="w-4 h-4 rounded-full bg-yellow-400 mt-0.5 flex-shrink-0"></div>
+                <div className="text-sm text-yellow-800">
+                  <strong>Warning:</strong> This action will make the bus inactive and end the current trip. 
+                  Make sure all passengers have been dropped off safely.
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setIsEndTripOpen(false)
+                  setEndTripForm({ busId: '', secretKey: '' })
+                  setSelectedBusForEndTrip(null)
+                }}
+                disabled={isEndingTrip}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                variant="destructive"
+                onClick={handleEndTripSubmit}
+                disabled={isEndingTrip}
+                className="flex-1"
+              >
+                {isEndingTrip ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Ending Trip...
+                  </>
+                ) : (
+                  'End Trip'
+                )}
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
