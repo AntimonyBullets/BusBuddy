@@ -102,6 +102,9 @@ export default function HeroPage() {
         // Redirect to organization registration page
         router.push("/institution-register")
       }
+    } else if (serviceName === "Courier Tracking Service") {
+      // Redirect to courier tracking page
+      router.push("/courier")
     } else {
       // User is authenticated, other features coming soon
       toast({
